@@ -1,8 +1,12 @@
-export default function ApplicationsPage() {
+
+import React from 'react';
+
+const ApplicationsPage = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-4">Applications</h2>
-      <p>This is the applications page.</p>
+      <h1>Applications Page</h1>
     </div>
   );
-}
+};
+
+export default ApplicationsPage;

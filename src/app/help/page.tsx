@@ -1,8 +1,12 @@
-export default function HelpPage() {
+
+import React from 'react';
+
+const HelpPage = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-4">Help</h2>
-      <p>This is the help page.</p>
+      <h1>Help Page</h1>
     </div>
   );
-}
+};
+
+export default HelpPage;

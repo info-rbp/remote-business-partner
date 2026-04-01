@@ -1,8 +1,12 @@
-export default function MembershipPage() {
+
+import React from 'react';
+
+const MembershipPage = () => {
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-4">Membership</h2>
-      <p>This is the membership page.</p>
+      <h1>Membership Page</h1>
     </div>
   );
-}
+};
+
+export default MembershipPage;
