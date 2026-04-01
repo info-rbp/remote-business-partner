@@ -1,0 +1,873 @@
+# Final Sitemap and Route Map
+
+## Document Purpose
+
+This document freezes the **final sitemap and route map** for the web application so Firebase Studio can implement the correct structure without improvising architecture, collapsing surfaces, or inventing navigation behavior that later conflicts with the platform shell.
+
+This is a **Stage 1 contract document**. It defines:
+- the final top-level surface map
+- the route hierarchy for each surface
+- the navigation boundaries between surfaces
+- route ownership rules
+- route-state expectations
+- shell behavior expectations
+- naming and implementation rules for the frontend skeleton
+
+This document must be used together with:
+- the system blueprint
+- the build instruction guide
+- the application skeleton build instructions
+
+The architecture remains **Frappe-first**, with the active runtime in the inner `rbp-bench/rbp-bench/` bench, not the outer bench wrapper. fileciteturn0file0
+
+---
+
+## Architectural Rule Summary
+
+The sitemap and route map must respect these non-negotiable rules:
+
+1. **Frappe-first platform principle**
+2. **Customer, entitlement, and payment control remain in the platform shell**
+3. **Public, client, and admin surfaces remain functionally distinct**
+4. **External systems are integrated services, not replacement cores**
+5. **Auditability, role separation, and repeatable operations outrank speed** fileciteturn0file20 fileciteturn0file21
+
+This means the route structure must never imply that:
+- public, client, admin, and application experiences are interchangeable
+- modules are loose external tools
+- raw vendor or repository URLs are acceptable user destinations
+- the frontend decides truth for access, payment, or onboarding state
+
+---
+
+## Product Surface Model
+
+The application must be represented as **four visible surfaces**:
+
+1. **Front-Facing Website**
+2. **Client Portal**
+3. **Admin Portal**
+4. **Application Layer / Module System**
+
+This is the original build model and must be preserved in the final sitemap.
+
+---
+
+## Final Top-Level Route Map
+
+```text
+/
+├── Public Surface
+│   ├── /home
+│   ├── /docushare
+│   ├── /applications
+│   ├── /membership
+│   ├── /offers
+│   ├── /resources
+│   ├── /help
+│   ├── /contact
+│   ├── /sign-in
+│   ├── /register
+│   ├── /forgot-password
+│   ├── /reset-password
+│   └── /auth/callback
+│
+├── Client Portal Surface
+│   └── /portal
+│       ├── /dashboard
+│       ├── /membership
+│       ├── /billing
+│       ├── /docushare
+│       ├── /applications
+│       ├── /support
+│       ├── /resources
+│       ├── /profile
+│       ├── /team
+│       └── /security
+│
+├── Admin Portal Surface
+│   └── /admin
+│       ├── /dashboard
+│       ├── /content
+│       ├── /docushare
+│       ├── /memberships
+│       ├── /entitlements
+│       ├── /applications
+│       ├── /customers
+│       ├── /support
+│       ├── /billing
+│       ├── /analytics
+│       ├── /permissions
+│       ├── /audit
+│       └── /settings
+│
+└── Application Layer Surface
+    └── /app
+        ├── /dashboard
+        ├── /modules
+        │   ├── /customers
+        │   ├── /sales
+        │   ├── /operations
+        │   ├── /finance
+        │   ├── /lending
+        │   ├── /compliance
+        │   ├── /people
+        │   ├── /support
+        │   ├── /knowledge
+        │   ├── /learning
+        │   ├── /communications
+        │   ├── /teams
+        │   └── /insights
+        ├── /subscription
+        └── /settings
+```
+
+---
+
+## Final Surface Definitions
+
+## 1. Front-Facing Website
+
+### Surface purpose
+The public surface exists to:
+- explain the platform
+- present applications and DocuShare clearly
+- package memberships and offers
+- publish resources and help content
+- collect enquiries and conversion intent
+- route users into authentication and portal experiences
+
+### Public surface entry point
+```text
+/
+```
+
+### Route alias rule
+The root route should resolve to the Home experience.
+
+Recommended:
+```text
+/ -> /home
+```
+or equivalent route-mounted home screen.
+
+### Final public routes
+
+```text
+/home
+/docushare
+/applications
+/membership
+/offers
+/resources
+/help
+/contact
+/sign-in
+/register
+/forgot-password
+/reset-password
+/auth/callback
+```
+
+### Required primary navigation
+- Home
+- Applications
+- Membership
+- Offers
+- Resources
+- Help
+- Contact
+- DocuShare
+
+### Required utility actions
+- Sign In
+- Register
+
+### Public route grouping rules
+- All public routes must share the public site shell
+- Auth routes may use a reduced public shell, but still belong to the public surface
+- Public screens must never expose authenticated client or admin navigation
+- Public application pages may explain modules, but may not behave like the real module launch catalogue
+
+### Public route-specific notes
+
+#### `/home`
+Primary landing page for the platform.
+
+#### `/docushare`
+Public DocuShare discovery and product-entry experience.
+
+#### `/applications`
+Public applications overview and capability catalogue.
+
+#### `/membership`
+Membership pricing, inclusions, and access explanation.
+
+#### `/offers`
+Promotions, campaigns, and bundles.
+
+#### `/resources`
+Guides, articles, downloads, and public learning entry points.
+
+#### `/help`
+Help hub, FAQ, support pathways.
+
+#### `/contact`
+Sales, support, and advisory contact pathways.
+
+#### `/sign-in`
+Public authentication entry.
+
+#### `/register`
+New account registration entry.
+
+#### `/forgot-password`
+Password reset initiation.
+
+#### `/reset-password`
+Password reset completion state.
+
+#### `/auth/callback`
+Identity callback and transition state.
+
+---
+
+## 2. Client Portal
+
+### Surface purpose
+The client portal exists to answer:
+- what access the client has
+- what they purchased or subscribed to
+- which applications they can launch
+- where billing stands
+- what support and resources are available
+
+### Client portal entry point
+```text
+/portal
+```
+
+Recommended default redirect:
+```text
+/portal -> /portal/dashboard
+```
+
+### Final client routes
+
+```text
+/portal/dashboard
+/portal/membership
+/portal/billing
+/portal/docushare
+/portal/applications
+/portal/support
+/portal/resources
+/portal/profile
+/portal/team
+/portal/security
+```
+
+### Required primary navigation
+- Dashboard
+- My Membership
+- Billing
+- DocuShare Access
+- Applications
+- Support
+- Resources
+- Profile
+- Team
+- Security
+
+### Client portal grouping rules
+- All routes under `/portal` must use the client portal shell
+- All `/portal` routes are authenticated
+- The client shell must remain visually distinct from public and admin surfaces
+- The client portal must not expose admin-only management routes
+- The client portal may expose application launch cards, but actual launch rights are backend-governed later
+
+### Client route-specific notes
+
+#### `/portal/dashboard`
+Client overview and next-action surface.
+
+#### `/portal/membership`
+Plan, inclusions, entitlements, and lifecycle visibility.
+
+#### `/portal/billing`
+Purchases, subscriptions, invoices, receipts, and billing status.
+
+#### `/portal/docushare`
+Purchased or included document/resource access.
+
+#### `/portal/applications`
+Client-facing application launchpad and access state presentation.
+
+#### `/portal/support`
+Support entry, issue history, guidance, and escalation visibility.
+
+#### `/portal/resources`
+Customer-facing resources and learning materials.
+
+#### `/portal/profile`
+Organisation profile, contacts, and preferences.
+
+#### `/portal/team`
+Team access, seats, and team management placeholders.
+
+#### `/portal/security`
+Authentication and account security settings.
+
+---
+
+## 3. Admin Portal
+
+### Surface purpose
+The admin portal is the internal operating console used to manage:
+- public site content
+- DocuShare catalogue
+- memberships and entitlements
+- application launch settings
+- customer state
+- support operations
+- billing oversight
+- analytics and governance
+
+### Admin portal entry point
+```text
+/admin
+```
+
+Recommended default redirect:
+```text
+/admin -> /admin/dashboard
+```
+
+### Final admin routes
+
+```text
+/admin/dashboard
+/admin/content
+/admin/docushare
+/admin/memberships
+/admin/entitlements
+/admin/applications
+/admin/customers
+/admin/support
+/admin/billing
+/admin/analytics
+/admin/permissions
+/admin/audit
+/admin/settings
+```
+
+### Required primary navigation
+- Dashboard
+- Content
+- DocuShare
+- Memberships
+- Entitlements
+- Applications
+- Customers
+- Support
+- Billing
+- Analytics
+- Permissions
+- Audit
+- Settings
+
+### Admin portal grouping rules
+- All routes under `/admin` must use the admin shell
+- All `/admin` routes are authenticated and staff-only
+- Admin routes must be designed for role-aware variation
+- Admin routes must not reuse client portal navigation semantics
+- Admin routes must be capable of supporting list/detail/edit/configuration patterns later
+
+### Admin route-specific notes
+
+#### `/admin/dashboard`
+Admin KPIs, alerts, queues, and operating summary.
+
+#### `/admin/content`
+Public-site and content-management workspace.
+
+#### `/admin/docushare`
+DocuShare catalogue, assets, pricing, visibility.
+
+#### `/admin/memberships`
+Membership plans and commercial structures.
+
+#### `/admin/entitlements`
+Entitlement definitions, overrides, and access models.
+
+#### `/admin/applications`
+Application visibility, launch methods, access rules, and metadata.
+
+#### `/admin/customers`
+Customer management, account state, billing and access oversight.
+
+#### `/admin/support`
+Support queues, SLA views, escalations, and service visibility.
+
+#### `/admin/billing`
+Payment state, invoices, failures, refunds, and oversight.
+
+#### `/admin/analytics`
+Operational and commercial analytics dashboards.
+
+#### `/admin/permissions`
+Roles, permission bands, approval groups, and access controls.
+
+#### `/admin/audit`
+Audit trail, approvals, exception visibility.
+
+#### `/admin/settings`
+Platform settings, integrations, navigation rules, feature flags.
+
+---
+
+## 4. Application Layer / Module System
+
+### Surface purpose
+The application layer is the governed module system exposed through the platform shell.
+
+It must **not** feel like:
+- a random app directory
+- raw infrastructure links
+- direct repository shortcuts
+- a disconnected fourth product
+
+It must feel like a governed platform subsystem.
+
+### Application layer entry point
+```text
+/app
+```
+
+Recommended default redirect:
+```text
+/app -> /app/dashboard
+```
+
+### Final application routes
+
+```text
+/app/dashboard
+/app/modules
+/app/modules/customers
+/app/modules/sales
+/app/modules/operations
+/app/modules/finance
+/app/modules/lending
+/app/modules/compliance
+/app/modules/people
+/app/modules/support
+/app/modules/knowledge
+/app/modules/learning
+/app/modules/communications
+/app/modules/teams
+/app/modules/insights
+/app/subscription
+/app/settings
+```
+
+### Required primary navigation
+- Dashboard
+- Modules
+- Subscription
+- Settings
+
+### Application-layer grouping rules
+- All routes under `/app` must use the application shell
+- The application shell must feel platform-governed
+- Individual module routes are not raw app instances; they are shell-governed module surfaces
+- Module cards must be prepared to represent different launch methods and access states later
+- `/app` routes remain separate from `/portal` routes, even where they are linked through the client experience
+
+### Application route-specific notes
+
+#### `/app/dashboard`
+User-specific overview of the governed application experience.
+
+#### `/app/modules`
+Module catalogue and discovery surface.
+
+#### `/app/modules/customers`
+Customers module surface placeholder.
+
+#### `/app/modules/sales`
+Sales module surface placeholder.
+
+#### `/app/modules/operations`
+Operations module surface placeholder.
+
+#### `/app/modules/finance`
+Finance module surface placeholder.
+
+#### `/app/modules/lending`
+Lending module surface placeholder.
+
+#### `/app/modules/compliance`
+Compliance module surface placeholder.
+
+#### `/app/modules/people`
+People module surface placeholder.
+
+#### `/app/modules/support`
+Support module surface placeholder.
+
+#### `/app/modules/knowledge`
+Knowledge module surface placeholder.
+
+#### `/app/modules/learning`
+Learning module surface placeholder.
+
+#### `/app/modules/communications`
+Communications module surface placeholder.
+
+#### `/app/modules/teams`
+Teams module surface placeholder.
+
+#### `/app/modules/insights`
+Insights module surface placeholder.
+
+#### `/app/subscription`
+Subscription, entitlements, add-ons, and usage surface.
+
+#### `/app/settings`
+User/account settings, team access, notifications, security, and connected services placeholders.
+
+---
+
+## Final Route Tree in Canonical Form
+
+```text
+/
+├── /home
+├── /docushare
+├── /applications
+├── /membership
+├── /offers
+├── /resources
+├── /help
+├── /contact
+├── /sign-in
+├── /register
+├── /forgot-password
+├── /reset-password
+├── /auth/callback
+│
+├── /portal
+│   ├── /dashboard
+│   ├── /membership
+│   ├── /billing
+│   ├── /docushare
+│   ├── /applications
+│   ├── /support
+│   ├── /resources
+│   ├── /profile
+│   ├── /team
+│   └── /security
+│
+├── /admin
+│   ├── /dashboard
+│   ├── /content
+│   ├── /docushare
+│   ├── /memberships
+│   ├── /entitlements
+│   ├── /applications
+│   ├── /customers
+│   ├── /support
+│   ├── /billing
+│   ├── /analytics
+│   ├── /permissions
+│   ├── /audit
+│   └── /settings
+│
+└── /app
+    ├── /dashboard
+    ├── /modules
+    │   ├── /customers
+    │   ├── /sales
+    │   ├── /operations
+    │   ├── /finance
+    │   ├── /lending
+    │   ├── /compliance
+    │   ├── /people
+    │   ├── /support
+    │   ├── /knowledge
+    │   ├── /learning
+    │   ├── /communications
+    │   ├── /teams
+    │   └── /insights
+    ├── /subscription
+    └── /settings
+```
+
+---
+
+## Cross-Surface Linking Rules
+
+Cross-surface navigation must behave intentionally.
+
+### Allowed conceptual flows
+- Public -> Sign In / Register
+- Public -> Client Portal (after auth)
+- Public -> Admin Portal (staff auth)
+- Public -> Applications explanation pages
+- Client Portal -> Application Layer module launch experience
+- Admin Portal -> internal application, content, or oversight views
+
+### Disallowed conceptual flows
+- Public -> raw repository URLs
+- Client Portal -> raw infrastructure, direct vendor admin panels, or unmanaged tools
+- Admin Portal -> public-facing route semantics for sensitive operations
+- Application Layer -> bypass of portal or shell meaning
+
+### Required rule
+Every cross-surface transition must later be governable by:
+- identity
+- entitlement
+- customer/account state
+- launch model
+- role/permission rules
+
+The skeleton must visually allow this, not block it.
+
+---
+
+## Route-State Requirements
+
+Every route in the final sitemap must be designed to support route-level state handling later.
+
+### Required universal states
+- loading
+- empty
+- success
+- warning
+- error
+- access-restricted
+
+### Additional route states by surface
+
+#### Public
+- authenticated redirect
+- gated content prompt
+- conversion success
+- form error
+
+#### Client
+- onboarding required
+- payment hold
+- compliance hold
+- no entitlement
+- partial access
+
+#### Admin
+- insufficient permission
+- approval required
+- queue empty
+- sync/integration issue
+
+#### Application layer
+- available
+- restricted
+- onboarding required
+- pending activation
+- launch unavailable
+
+The route map must be built with these states in mind, even if the skeleton uses mock data.
+
+---
+
+## Final Navigation Model by Surface
+
+## Public navigation
+### Primary
+- Home
+- Applications
+- Membership
+- Offers
+- Resources
+- Help
+- Contact
+- DocuShare
+
+### Utility
+- Sign In
+- Register
+
+## Client navigation
+### Primary
+- Dashboard
+- My Membership
+- Billing
+- DocuShare Access
+- Applications
+- Support
+- Resources
+- Profile
+- Team
+- Security
+
+## Admin navigation
+### Primary
+- Dashboard
+- Content
+- DocuShare
+- Memberships
+- Entitlements
+- Applications
+- Customers
+- Support
+- Billing
+- Analytics
+- Permissions
+- Audit
+- Settings
+
+## Application shell navigation
+### Primary
+- Dashboard
+- Modules
+- Subscription
+- Settings
+
+---
+
+## Implementation Rules for Firebase Studio
+
+Firebase Studio must follow these route-map rules exactly:
+
+1. Keep all four surfaces present in the skeleton.
+2. Do not collapse the product into one mega-dashboard.
+3. Do not skip “secondary” routes because they feel less important now.
+4. Preserve naming exactly unless an explicit naming change is approved.
+5. Use route grouping that makes later backend wiring predictable.
+6. Keep public, client, admin, and app shells visually related but distinct.
+7. Treat `/app/modules/*` as governed module surfaces, not final integrated business logic.
+8. Keep auth routes in the public surface, not mixed into client/admin route groups.
+9. Ensure redirects are predictable:
+   - `/portal` -> `/portal/dashboard`
+   - `/admin` -> `/admin/dashboard`
+   - `/app` -> `/app/dashboard`
+10. Ensure the root public experience resolves cleanly to the Home page.
+
+---
+
+## Recommended Frontend Route File Structure
+
+```text
+frontend/
+  routes/
+    public/
+      home
+      docushare
+      applications
+      membership
+      offers
+      resources
+      help
+      contact
+      sign-in
+      register
+      forgot-password
+      reset-password
+      auth-callback
+    portal/
+      dashboard
+      membership
+      billing
+      docushare
+      applications
+      support
+      resources
+      profile
+      team
+      security
+    admin/
+      dashboard
+      content
+      docushare
+      memberships
+      entitlements
+      applications
+      customers
+      support
+      billing
+      analytics
+      permissions
+      audit
+      settings
+    app/
+      dashboard
+      modules
+        customers
+        sales
+        operations
+        finance
+        lending
+        compliance
+        people
+        support
+        knowledge
+        learning
+        communications
+        teams
+        insights
+      subscription
+      settings
+```
+
+---
+
+## Canonical Naming Decisions
+
+These names are frozen for Stage 1 unless intentionally changed across the whole contract set.
+
+### Surfaces
+- Front-Facing Website
+- Client Portal
+- Admin Portal
+- Application Layer / Module System
+
+### Top-level route groups
+- `/`
+- `/portal`
+- `/admin`
+- `/app`
+
+### Application shell nav labels
+- Dashboard
+- Modules
+- Subscription
+- Settings
+
+### Module catalogue labels
+- Customers
+- Sales
+- Operations
+- Finance
+- Lending
+- Compliance
+- People
+- Support
+- Knowledge
+- Learning
+- Communications
+- Teams
+- Insights
+
+---
+
+## Definition of Completion for This Document
+
+This sitemap and route map is complete when:
+- all four surfaces are represented
+- all final routes are listed and frozen
+- each route has a clear surface owner
+- navigation expectations are defined by surface
+- cross-surface linking rules are defined
+- route-state requirements are known
+- Firebase Studio can implement the skeleton without inventing structure later
+
