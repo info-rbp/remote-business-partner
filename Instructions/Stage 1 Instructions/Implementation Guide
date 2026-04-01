@@ -1,0 +1,1397 @@
+# Stage 2--12 Comprehensive Implementation Guide
+
+## Frappe-First Multi-Module Platform Shell
+
+### Revised for Manifest-Aware Development
+
+## Purpose
+
+This document is the **implementation guide for Stages 2 through 12** of
+the web application build.
+
+It translates the agreed build sequence into an actionable execution
+guide that reflects:
+
+-   the **inner bench** as the authoritative backend/runtime
+-   **Firebase Studio** as the frontend/surface implementation layer
+-   the **repository manifest** as an ecosystem-awareness and
+    integration-planning artifact
+-   the platform shell as the owner of:
+    -   customer state
+    -   entitlement logic
+    -   payment state
+    -   launch governance
+    -   surface separation
+    -   integration metadata
+
+This guide assumes **Stage 1 is complete enough to freeze the frontend
+contract**, including: - sitemap and route map - screen inventory - user
+type and journey matrix - API and response models - launch-model
+definitions
+
+------------------------------------------------------------------------
+
+## Guiding Rules
+
+1.  **Frappe remains runtime truth**
+    -   Backend authority lives in the active inner bench.
+    -   Firebase Studio is not the backend runtime.
+2.  **The platform shell remains authoritative**
+    -   Customer state, entitlements, billing state, and launch
+        permissions are not decided in the frontend.
+3.  **The manifest describes the ecosystem**
+    -   It is used for workspace awareness, integration planning, and
+        later sync tooling.
+    -   It does not replace backend truth.
+4.  **External systems are integrated services**
+    -   They may be embedded, SSO-launched, redirected to, or
+        referenced.
+    -   They are not the source of platform truth.
+5.  **Public, client, admin, and application surfaces remain distinct**
+    -   Even if they share design language, they must not collapse into
+        one undifferentiated shell.
+6.  **No raw infrastructure or raw repository URLs in user-facing
+    surfaces**
+    -   All user-facing launches must be governed by the platform shell.
+
+------------------------------------------------------------------------
+
+# Stage 2 --- Backend Foundation + Ecosystem Registration
+
+## Objective
+
+Stabilise the backend foundation in Frappe while formally registering
+the external repository ecosystem in a way that supports future
+integration **without polluting runtime truth**.
+
+## Inputs
+
+-   active inner bench/runtime
+-   current Frappe site and installed apps
+-   repository manifest
+-   Stage 1 route/API/launch contracts
+
+## Outputs
+
+-   validated backend runtime baseline
+-   documented runtime authority
+-   repository ecosystem mapping
+-   integration-registry design
+-   secure environment baseline
+-   launch-awareness preparation
+
+## 2.1 Confirm Runtime Authority
+
+### Actions
+
+-   Verify that the authoritative backend/runtime is:
+    -   `rbp-bench/rbp-bench`
+-   Confirm the active site:
+    -   `rbp.local`
+-   Confirm installed apps in the active bench
+-   Confirm that the outer bench wrapper is not being treated as the
+    implementation target
+
+### Deliverables
+
+-   runtime authority note
+-   active bench inventory
+-   installed app baseline record
+
+### Validation
+
+-   backend commands run successfully against the inner bench
+-   site and app inventory match the expected project baseline
+-   no build step targets the outer wrapper bench by mistake
+
+## 2.2 Validate Core Backend Services
+
+### Actions
+
+-   Validate scheduler health
+-   Validate workers and background jobs
+-   Validate realtime/socket layer
+-   Validate file handling/storage
+-   Validate base site responsiveness
+
+### Deliverables
+
+-   environment health checklist
+-   service status report
+
+### Validation
+
+-   queue workers execute jobs
+-   realtime events succeed
+-   files can be written/read safely
+-   site boots without critical errors
+
+## 2.3 Lock Frontend vs Backend Responsibility Boundary
+
+### Actions
+
+-   Record the architecture boundary explicitly:
+    -   Firebase Studio = UI/surface layer
+    -   Frappe = source of truth
+-   Ban frontend-side logic for:
+    -   entitlements
+    -   billing state
+    -   onboarding truth
+    -   approval truth
+    -   raw launch permissions
+-   Confirm that UI consumes backend state rather than generating it
+
+### Deliverables
+
+-   architecture boundary note
+-   implementation do/do-not list
+
+### Validation
+
+-   no core business rule is defined only in frontend code/specs
+-   API contracts remain backend-first
+
+## 2.4 Install and Validate Repository Manifest
+
+### Actions
+
+-   Place manifest assets in:
+    -   `integration/repo-manifest/repos.manifest.json`
+    -   `integration/repo-manifest/README.md`
+-   Validate:
+    -   JSON syntax
+    -   unique repository keys
+    -   correct `type` values
+    -   correct authoritative runtime note
+-   Confirm the manifest is readable by humans and tooling
+
+### Deliverables
+
+-   validated manifest
+-   manifest usage guide
+-   installation confirmation
+
+### Validation
+
+-   JSON parses cleanly
+-   keys are unique
+-   README reflects actual intended usage
+
+## 2.5 Perform Repository Ecosystem Mapping
+
+### Actions
+
+For each repository in the manifest, map: - module family - likely user
+surface: - public - client - admin - internal - launch pattern: -
+native - embed - sso - redirect - none - lifecycle stage: - reference -
+planned integration - active integration - operational classification: -
+runtime-critical - reference-only - internal tool - close-integration
+candidate
+
+### Deliverables
+
+-   repository-to-module mapping table
+-   repository-to-launch mapping table
+-   surface exposure map
+
+### Validation
+
+-   every repository is classified
+-   no repo is accidentally treated as runtime-critical without evidence
+-   `rbp_core` remains the only default close-source-adjacency candidate
+    unless explicitly expanded
+
+## 2.6 Define Backend Integration Registry Model
+
+### Actions
+
+Design backend records for future ecosystem awareness: - External
+Service - Repository Reference - Launch Configuration - Integration
+Connection - Sync Metadata - optional Service Health / Service
+Capability record
+
+Define for each: - canonical owner - purpose - fields - relationships to
+modules, accounts, entitlements, and surfaces
+
+### Deliverables
+
+-   integration registry model spec
+-   candidate DocType list
+-   relationship diagram
+
+### Validation
+
+-   model supports reference repos without cloning them
+-   model supports future sync tooling without becoming business truth
+    itself
+
+## 2.7 Decide `rbp_core` Treatment
+
+### Actions
+
+-   Confirm `rbp_core` remains the custom platform shell/control plane
+-   Decide whether `rbp_core` should remain:
+    -   bench/runtime-adjacent only
+    -   or additionally brought closer to workspace source adjacency
+-   Explicitly reject "mass submodule everything"
+
+### Deliverables
+
+-   `rbp_core` source adjacency decision record
+-   source ownership note
+
+### Validation
+
+-   `rbp_core` treatment is clear
+-   no repo sprawl is introduced into the main workspace
+
+## 2.8 Establish Environment and Security Baseline
+
+### Actions
+
+-   Define environment separation:
+    -   local/dev
+    -   staging
+    -   production
+-   Define secrets handling:
+    -   environment variables
+    -   secret storage conventions
+    -   rotation expectations
+-   Ensure:
+    -   no raw repo credentials in code
+    -   no raw service tokens in frontend
+    -   no direct public exposure of admin endpoints or vendor panels
+
+### Deliverables
+
+-   environment matrix
+-   secrets handling note
+-   security baseline checklist
+
+### Validation
+
+-   secrets are not embedded in frontend
+-   public/client surfaces cannot discover privileged service endpoints
+
+## 2.9 Define Launch Awareness Preparation Layer
+
+### Actions
+
+Prepare backend understanding of: - launch methods - availability
+states - reason codes - remediation types - audience scopes
+
+Ensure Stage 1 launch models can later map 1:1 into backend records and
+APIs.
+
+### Deliverables
+
+-   launch vocabulary registry
+-   availability/reason-code registry
+-   remediation registry
+
+### Validation
+
+-   launch-model terms are stable
+-   frontend launch contract maps cleanly to backend-ready terms
+
+------------------------------------------------------------------------
+
+# Stage 3 --- Platform Shell Development
+
+## Objective
+
+Implement the platform shell as the governing control plane for
+navigation, module visibility, entitlement-aware access, subscription
+context, launch behavior, and surface separation.
+
+## Inputs
+
+-   validated runtime baseline
+-   Stage 1 contracts
+-   launch vocabulary
+-   repository ecosystem mapping
+
+## Outputs
+
+-   platform shell records and logic
+-   governed module registry
+-   launch-configuration engine
+-   entitlement engine
+-   route/surface enforcement
+
+## 3.1 Build Core Shell Structure
+
+### Actions
+
+Implement backend support for shell domains: - Dashboard - Modules -
+Subscription - Settings
+
+Define shell responsibilities for: - public - client - admin -
+application surfaces
+
+### Deliverables
+
+-   shell structure model
+-   shell navigation schema
+-   shell route ownership rules
+
+### Validation
+
+-   shell domains are backend-recognised concepts, not just UI labels
+
+## 3.2 Create Core Platform Records
+
+### Actions
+
+Design and implement records such as: - Platform Module - Platform
+Page - Navigation Rule - Subscription Plan - Subscription -
+Entitlement - Billing Account - Application Access Rule - Integration
+Connection - External Service Reference - Launch Configuration -
+Customer Timeline Event - Customer Onboarding Case - Payment Mirror
+Record
+
+### Deliverables
+
+-   core platform DocTypes/records
+-   schema notes
+-   admin management approach
+
+### Validation
+
+-   these records can represent the shell and ecosystem cleanly
+-   records support future workflows without frontend hacks
+
+## 3.3 Implement Module Registry
+
+### Actions
+
+Create a data-driven module registry that maps: - module family - module
+key - module route - module visibility - module launch pattern - linked
+repo/service reference if external - audience scope
+
+### Deliverables
+
+-   module registry
+-   module catalogue data model
+-   registry admin management path
+
+### Validation
+
+-   no modules are hardcoded solely in frontend
+-   registry can represent both native and external-backed capabilities
+
+## 3.4 Implement Launch Configuration Engine
+
+### Actions
+
+Store for each launchable object: - launch method - availability state -
+route/target metadata - onboarding requirement - entitlement
+requirement - maintenance state - remediation rules
+
+### Deliverables
+
+-   launch configuration model
+-   admin-editable launch settings
+-   backend launch-readiness resolution rules
+
+### Validation
+
+-   launch method and availability are backend-resolved
+-   UI could render launch state without guesswork
+
+## 3.5 Implement Entitlement Engine
+
+### Actions
+
+Map: - plan → entitlement set - entitlement set → module access -
+entitlement set → DocuShare/resource access - entitlement set → support
+level - commercial overrides → access variations
+
+### Deliverables
+
+-   entitlement model
+-   access-evaluation rules
+-   override handling strategy
+
+### Validation
+
+-   access can be resolved from backend data
+-   frontend does not derive access from copy or pricing text
+
+## 3.6 Implement Surface Routing Enforcement
+
+### Actions
+
+Define and enforce route groups for: - public - portal/client - admin -
+app/modules
+
+Tie route eligibility to: - user role - account state - module
+availability - launch model
+
+### Deliverables
+
+-   route access rules
+-   surface separation rules
+-   redirect/fallback rules
+
+### Validation
+
+-   user cannot enter protected surfaces by UI-only route assumptions
+-   cross-surface routing behaves consistently
+
+------------------------------------------------------------------------
+
+# Stage 4 --- Identity and Access Integration
+
+## Objective
+
+Integrate identity and session handling so the platform can authenticate
+users, map them to platform roles, and support secure external launches
+later.
+
+## Inputs
+
+-   shell route groups
+-   role model
+-   launch configuration design
+-   chosen identity provider
+
+## Outputs
+
+-   working identity integration
+-   role mapping
+-   session policies
+-   SSO handoff preparation
+
+## 4.1 Integrate Identity Provider
+
+### Actions
+
+Integrate Authentik or chosen IdP for: - login - logout - callback -
+password reset entry - session validation
+
+### Deliverables
+
+-   identity integration config
+-   callback flow
+-   auth entry routes
+
+### Validation
+
+-   login/logout/callback works across surfaces
+-   user reaches proper shell entry after auth
+
+## 4.2 Map Identity to Platform Roles
+
+### Actions
+
+Map identity claims/groups to platform roles: - public user - client
+account owner - billing contact - team admin - standard user -
+read-only - admin roles
+
+### Deliverables
+
+-   claim-to-role mapping rules
+-   fallback rules
+-   role assignment notes
+
+### Validation
+
+-   role resolution is deterministic
+-   users are not over-privileged by default
+
+## 4.3 Define Session Policies
+
+### Actions
+
+Define: - session timeout - refresh behavior - MFA expectations - admin
+vs client policy differences - device/session review approach if needed
+
+### Deliverables
+
+-   session policy matrix
+-   security policy note
+
+### Validation
+
+-   admin and client session behavior is distinct where needed
+-   session expiry behavior is explicit
+
+## 4.4 Prepare SSO Launch Capability
+
+### Actions
+
+Prepare token-based or signed launch handoff for: - SSO services -
+external dashboards - partner systems
+
+Do not expose direct service login routes to end users.
+
+### Deliverables
+
+-   SSO launch pattern
+-   temporary token strategy
+-   external launch control note
+
+### Validation
+
+-   external service access can be mediated by the backend
+-   no UI constructs external SSO paths directly
+
+------------------------------------------------------------------------
+
+# Stage 5 --- Front-Facing Website Integration
+
+## Objective
+
+Connect the public-facing website surface to backend records and
+controlled entry flows without turning it into a separate system.
+
+## Inputs
+
+-   Stage 1 public routes
+-   shell route rules
+-   identity entry points
+-   CMS/content strategy
+
+## Outputs
+
+-   backend-connected public site
+-   controlled auth entry
+-   public discovery and conversion flows
+
+## 5.1 Connect Content Layer
+
+### Actions
+
+Drive public pages from backend-managed content records or controlled
+content sources: - Home - Applications - Membership - Offers -
+Resources - Help - Contact - DocuShare overview
+
+### Deliverables
+
+-   content-backed public pages
+-   content management pathways
+-   placeholder-to-live content migration path
+
+### Validation
+
+-   content can be updated without frontend code edits for routine
+    changes
+
+## 5.2 Implement Public Forms
+
+### Actions
+
+Connect: - lead capture - contact - support enquiry - discovery booking
+requests - application interest
+
+Store these in canonical backend records.
+
+### Deliverables
+
+-   form endpoints
+-   form record model
+-   validation and confirmation states
+
+### Validation
+
+-   form submissions land in backend records
+-   no form relies on frontend-only state
+
+## 5.3 Implement Auth Entry
+
+### Actions
+
+Wire: - sign in - register - forgot/reset password - callback processing
+
+### Deliverables
+
+-   working auth entry screens
+-   route guards for authenticated users
+-   post-login forwarding rules
+
+### Validation
+
+-   public user can enter auth flow and reach correct next surface
+
+## 5.4 Implement Controlled Discovery
+
+### Actions
+
+Use Applications and DocuShare pages to: - explain offerings - show
+governed catalogue previews - invite sign-in/register/plan actions
+
+Do not provide privileged internal launches from the public surface.
+
+### Deliverables
+
+-   controlled public discovery experience
+-   preview-only application visibility rules
+
+### Validation
+
+-   public pages do not expose raw service launches
+-   public discovery routes into platform flows cleanly
+
+------------------------------------------------------------------------
+
+# Stage 6 --- Client Portal Integration
+
+## Objective
+
+Turn the client portal from a UI shell into a state-aware customer
+workspace driven by backend truth.
+
+## Inputs
+
+-   entitlement engine
+-   billing model
+-   identity integration
+-   route groups
+-   launch APIs
+
+## Outputs
+
+-   connected client dashboard
+-   membership/billing visibility
+-   governed application launchpad
+-   support/profile/team workflows
+
+## 6.1 Wire Client Dashboard
+
+### Actions
+
+Populate client dashboard with backend-driven widgets: - membership
+summary - billing summary - module availability - alerts/notices -
+onboarding tasks - next-step recommendations
+
+### Deliverables
+
+-   dashboard API
+-   dashboard response model
+-   widget state handling
+
+### Validation
+
+-   dashboard reflects backend state, not mock assumptions
+
+## 6.2 Implement Membership Integration
+
+### Actions
+
+Expose: - current plan - inclusions - entitlements - support level -
+upgrade/downgrade paths
+
+### Deliverables
+
+-   membership API
+-   subscription/entitlement mapping
+-   remediation pathways
+
+### Validation
+
+-   membership view explains access cleanly
+
+## 6.3 Implement Billing Integration
+
+### Actions
+
+Expose: - invoices - payment method status - payment failures -
+outstanding balances - renewal state - receipts/refunds where applicable
+
+### Deliverables
+
+-   billing API
+-   billing state vocabulary
+-   remediation CTAs
+
+### Validation
+
+-   billing state is backend-derived and explainable
+
+## 6.4 Implement Application Launchpad
+
+### Actions
+
+Use: - module registry - launch-readiness API - launch-execute API
+
+Support: - available - restricted - onboarding required - pending -
+billing hold - compliance hold
+
+### Deliverables
+
+-   application launchpad
+-   stateful module cards
+-   remediation handling
+
+### Validation
+
+-   module cards are not plain links
+-   launch behavior is governed by backend APIs
+
+## 6.5 Implement Support System
+
+### Actions
+
+Enable: - ticket submission - ticket list/history - support status
+visibility - contact/support escalation entry points
+
+### Deliverables
+
+-   support API
+-   ticket states
+-   support UX flows
+
+### Validation
+
+-   support interaction records exist in backend
+-   support state is visible to the client
+
+## 6.6 Implement Profile and Team Management
+
+### Actions
+
+Enable: - organisation profile - contacts - billing contacts -
+users/seats - roles - notification and security preferences
+
+### Deliverables
+
+-   profile/team APIs
+-   user-management model
+-   settings flows
+
+### Validation
+
+-   users and roles are backend-controlled
+-   portal cannot self-authorise beyond permitted rules
+
+------------------------------------------------------------------------
+
+# Stage 7 --- Admin Portal Integration
+
+## Objective
+
+Implement the internal operating console that manages content,
+customers, entitlements, launches, billing, support, and reporting.
+
+## Inputs
+
+-   shell records
+-   role model
+-   launch configuration
+-   content models
+-   customer/account records
+
+## Outputs
+
+-   functional admin portal
+-   management interfaces
+-   role-aware oversight tools
+
+## 7.1 Build Admin Dashboard
+
+### Actions
+
+Provide: - KPI strip - operational alerts - billing alerts - support
+queues - onboarding/compliance queues - launch/config issues
+
+### Deliverables
+
+-   admin dashboard APIs
+-   queue summary views
+-   alert widgets
+
+### Validation
+
+-   dashboard supports operational decision-making
+
+## 7.2 Implement Content Management
+
+### Actions
+
+Manage: - pages - resources - application content - hero/CTA/FAQ
+patterns - contact routing content
+
+### Deliverables
+
+-   content management interfaces
+-   publication lifecycle states
+
+### Validation
+
+-   public content can be maintained through admin controls
+
+## 7.3 Implement Membership and Entitlement Management
+
+### Actions
+
+Manage: - plans - inclusions - entitlement sets - overrides - support
+tiers - upgrade paths
+
+### Deliverables
+
+-   plan management tools
+-   entitlement management tools
+
+### Validation
+
+-   plan changes flow through entitlement logic consistently
+
+## 7.4 Implement Application and Launch Management
+
+### Actions
+
+Manage: - module visibility - launch method - onboarding requirements -
+allowed audiences - maintenance flags - remediation behavior
+
+### Deliverables
+
+-   launch config admin UI
+-   module registry admin UI
+
+### Validation
+
+-   admin can control module exposure without editing frontend code
+
+## 7.5 Implement Customer Management
+
+### Actions
+
+Manage: - customer profile - membership state - access state - billing
+state - support history - onboarding/compliance progress
+
+### Deliverables
+
+-   customer 360 views
+-   state management tools
+
+### Validation
+
+-   customer state can be observed and acted on centrally
+
+## 7.6 Implement Billing Oversight
+
+### Actions
+
+Manage: - payment failures - refunds - invoices - payment mirror
+states - webhook visibility - billing holds
+
+### Deliverables
+
+-   finance/admin billing views
+-   payment oversight interfaces
+
+### Validation
+
+-   admin can explain billing-driven access changes
+
+## 7.7 Implement Role and Permission Management
+
+### Actions
+
+Define admin roles and management around: - platform admin -
+operations - finance - support - content - compliance - analysts /
+read-only where needed
+
+### Deliverables
+
+-   role management interfaces
+-   permission matrices
+-   approval-ready structure
+
+### Validation
+
+-   not every admin sees everything by default
+-   privileged actions can later be audited
+
+------------------------------------------------------------------------
+
+# Stage 8 --- Commerce and Payment Integration
+
+## Objective
+
+Integrate commerce and payments so purchases, subscriptions, renewals,
+failures, and refunds update platform state correctly.
+
+## Inputs
+
+-   billing account model
+-   subscription/entitlement model
+-   chosen payment provider
+-   webhook/event model
+
+## Outputs
+
+-   working payment flows
+-   payment mirror records
+-   entitlement sync
+-   refund-driven access control
+
+## 8.1 Integrate Payment Provider
+
+### Actions
+
+Integrate secure payment provider components for: - payment capture -
+recurring billing - checkout/session handling - webhook receipt
+
+### Deliverables
+
+-   provider integration
+-   payment event intake
+-   environment config
+
+### Validation
+
+-   provider events are received securely
+-   no payment truth depends on frontend redirects
+
+## 8.2 Implement Subscription Lifecycle
+
+### Actions
+
+Support: - sign-up - activation - renewal - cancellation - plan change
+
+### Deliverables
+
+-   subscription lifecycle workflows
+-   billing cadence logic
+
+### Validation
+
+-   subscription state flows into entitlement state correctly
+
+## 8.3 Implement Payment-to-Entitlement Sync
+
+### Actions
+
+On payment events: - grant access - maintain access - restrict access on
+failure - create timeline/audit entries
+
+### Deliverables
+
+-   payment mirror update logic
+-   entitlement sync rules
+
+### Validation
+
+-   payment outcome changes access server-side, not in UI only
+
+## 8.4 Implement Refund Handling
+
+### Actions
+
+Support: - refund initiation - refund status tracking - access
+retention/revocation rules - customer-visible and admin-visible status
+updates
+
+### Deliverables
+
+-   refund workflows
+-   refund-to-access policy implementation
+
+### Validation
+
+-   refund behavior is explainable and consistent
+
+------------------------------------------------------------------------
+
+# Stage 9 --- Module Activation Strategy
+
+## Objective
+
+Activate modules in controlled phases rather than exposing every
+capability at once.
+
+## Inputs
+
+-   manifest mapping
+-   shell module registry
+-   launch configurations
+-   Phase 1 scope
+
+## Outputs
+
+-   phased activation plan
+-   visible/hidden module rules
+-   controlled rollout
+
+## 9.1 Define Phase 1 Modules
+
+### Actions
+
+Confirm Phase 1 modules such as: - Customers - Sales - Operations -
+Support - Subscription/Entitlements - baseline Insights - finance where
+billing trust is critical
+
+### Deliverables
+
+-   Phase 1 module list
+-   justification for scope
+
+### Validation
+
+-   scope is achievable and does not overexpose unfinished modules
+
+## 9.2 Map Modules to Ecosystem
+
+### Actions
+
+For each module: - map manifest-backed services - define launch
+pattern - define integration stage - define native vs external
+responsibility
+
+### Deliverables
+
+-   module-to-ecosystem map
+-   launch readiness plan
+
+### Validation
+
+-   each Phase 1 module has a clear implementation path
+
+## 9.3 Activate Incrementally
+
+### Actions
+
+For each module: - enable visibility only when correct - enable launch
+only when backend readiness exists - expose remediation when not yet
+launchable
+
+### Deliverables
+
+-   activation checklist per module
+-   rollout gating rules
+
+### Validation
+
+-   incomplete modules do not leak as pseudo-working products
+
+## 9.4 Hide Incomplete Modules
+
+### Actions
+
+Ensure modules that are not ready are: - hidden - shown as pending -
+shown as coming later - or restricted with clear explanation
+
+### Deliverables
+
+-   incomplete-module handling rules
+
+### Validation
+
+-   no half-built capability is presented as ready
+
+------------------------------------------------------------------------
+
+# Stage 10 --- External Integration Layer
+
+## Objective
+
+Integrate external services behind governed records and launch rules,
+using the manifest as awareness and planning input rather than runtime
+truth.
+
+## Inputs
+
+-   manifest
+-   launch model
+-   identity/SSO capability
+-   integration registry model
+
+## Outputs
+
+-   external connection framework
+-   governed external launches
+-   future sync preparation
+
+## 10.1 Use Manifest as Ecosystem Awareness
+
+### Actions
+
+Use the manifest to: - identify services - plan integrations - document
+dependencies - support workspace awareness
+
+Do not: - auto-clone all repos - treat repos as active runtime
+dependencies by default
+
+### Deliverables
+
+-   manifest-aware integration plan
+
+### Validation
+
+-   repo manifest remains informational/planning-first
+
+## 10.2 Implement Integration Connections
+
+### Actions
+
+Store: - endpoint metadata - auth strategy - connection config -
+status/health metadata
+
+### Deliverables
+
+-   integration connection records
+-   per-service config model
+
+### Validation
+
+-   services can be represented without direct frontend coupling
+
+## 10.3 Implement Launch Integration
+
+### Actions
+
+Support governed launches via: - embed - SSO - redirect
+
+For each integrated service define: - who can access it - what state
+blocks it - what launch method applies - what remediation exists
+
+### Deliverables
+
+-   integrated launch records
+-   per-service launch readiness support
+
+### Validation
+
+-   no user-facing service launch bypasses backend control
+
+## 10.4 Prepare Sync System (Future)
+
+### Actions
+
+Define future jobs for: - repo sync - metadata extraction - service
+inventory refresh - launch metadata refresh
+
+### Deliverables
+
+-   sync job design note
+-   future automation roadmap
+
+### Validation
+
+-   future sync can be added without redesigning core runtime
+
+------------------------------------------------------------------------
+
+# Stage 11 --- Automation, Analytics, Security, and Audit
+
+## Objective
+
+Add durable automation patterns, operational analytics, security
+controls, and auditability so the platform is operable and governable.
+
+## Inputs
+
+-   event-producing workflows
+-   admin portal
+-   integration layer
+-   reporting requirements
+
+## Outputs
+
+-   outbox/event model
+-   reporting baseline
+-   security controls
+-   audit trails
+
+## 11.1 Implement Event System
+
+### Actions
+
+Use: - outbox pattern - retries - idempotency - failure handling -
+replay strategy where needed
+
+### Deliverables
+
+-   event model
+-   background processing rules
+-   retry/error handling design
+
+### Validation
+
+-   key workflows can survive transient service failure
+
+## 11.2 Implement Analytics and Reporting
+
+### Actions
+
+Provide: - KPI dashboards - operational metrics -
+finance/support/conversion metrics - role-based reporting access -
+insights baseline
+
+### Deliverables
+
+-   analytics model
+-   dashboard/report inventory
+-   reporting access controls
+
+### Validation
+
+-   metrics are generated from governed data sources
+
+## 11.3 Implement Security Controls
+
+### Actions
+
+Enforce: - role-based access - secrets discipline - privileged action
+restrictions - environment separation - launch target protection
+
+### Deliverables
+
+-   security checklist
+-   permission enforcement rules
+-   secrets handling implementation
+
+### Validation
+
+-   sensitive operations require proper authority
+-   secrets and service endpoints are protected
+
+## 11.4 Implement Audit Trails
+
+### Actions
+
+Track: - plan changes - entitlement overrides - launch-config changes -
+refunds - sensitive admin actions - integration changes
+
+### Deliverables
+
+-   audit event model
+-   audit visibility interfaces
+-   retention approach
+
+### Validation
+
+-   sensitive changes are observable and attributable
+
+------------------------------------------------------------------------
+
+# Stage 12 --- Testing, Go-Live, and Operations
+
+## Objective
+
+Validate the platform end to end, prepare production readiness, and
+establish operating discipline after launch.
+
+## Inputs
+
+-   all prior stages
+-   staging environment
+-   UAT participants
+-   support/operations readiness
+
+## Outputs
+
+-   validated flows
+-   production readiness package
+-   post-launch operating plan
+
+## 12.1 Define End-to-End Scenarios
+
+### Actions
+
+Define and test scenarios such as: - public discovery → sign up →
+access - purchase → payment → entitlement - application launch -
+onboarding → activation - billing failure → access change - refund →
+access adjustment - support request lifecycle - admin launch-config
+update → client-visible effect
+
+### Deliverables
+
+-   E2E test matrix
+-   scenario scripts
+-   expected outcomes
+
+### Validation
+
+-   every critical commercial and access flow is covered
+
+## 12.2 Run Staging / UAT
+
+### Actions
+
+Run staging and UAT against: - route groups - dashboards - launches -
+billing - entitlements - admin controls - integrations - support flows
+
+### Deliverables
+
+-   UAT report
+-   defect list
+-   sign-off notes
+
+### Validation
+
+-   no major workflow remains unvalidated
+-   defects are triaged before go-live
+
+## 12.3 Production Readiness
+
+### Actions
+
+Prepare: - monitoring - logging - backups - rollback plan - alerting -
+incident runbooks - environment promotion controls
+
+### Deliverables
+
+-   go-live checklist
+-   operations runbook
+-   rollback plan
+
+### Validation
+
+-   production readiness package is complete
+-   rollback path is tested
+
+## 12.4 Post-Launch Operations
+
+### Actions
+
+Set operating cadence for: - weekly updates - controlled feature
+expansion - repo integration rollout - issue triage - service health
+review - manifest/repository review
+
+### Deliverables
+
+-   post-launch cadence
+-   backlog grooming pattern
+-   release management approach
+
+### Validation
+
+-   there is a repeatable operating model after launch
+
+------------------------------------------------------------------------
+
+# Cross-Stage Control Checklist
+
+The following rules apply across all stages:
+
+-   Do not treat the manifest as runtime truth.
+-   Do not let Firebase Studio become the backend.
+-   Do not expose raw repository URLs.
+-   Do not implement launch behavior as frontend-only logic.
+-   Do not skip route/surface separation.
+-   Do not activate modules before their backend and launch contracts
+    exist.
+-   Do not allow payments, onboarding, or entitlements to be governed in
+    browser state.
+-   Do not clone all repos into the main workspace just because they are
+    listed in the manifest.
+
+------------------------------------------------------------------------
+
+# Definition of Success
+
+Stages 2--12 are successfully executed when:
+
+-   the inner bench remains the validated backend runtime
+-   the platform shell governs modules, launches, entitlements, and
+    surfaces
+-   Firebase Studio acts as a clean frontend layer over stable contracts
+-   the manifest supports ecosystem awareness without repo bloat
+-   external services are integrated through governed launch models
+-   module activation is phased and controlled
+-   billing, entitlement, and customer state remain platform-owned
+-   security, audit, analytics, and operations are in place
+-   staging/UAT proves the system works before go-live

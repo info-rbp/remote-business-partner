@@ -1,14 +1,11 @@
-import React from 'react';
+import PublicLayout from '../(public)/layout';
 
-const ContactPage = () => {
+export default function Contact() {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold mb-8">Contact</h1>
-        <p>This is a placeholder for the Contact page.</p>
-      </div>
-    </div>
+    <PublicLayout>
+      <main className="container mx-auto p-4">
+        <h1 className="text-4xl font-bold">Contact</h1>
+      </main>
+    </PublicLayout>
   );
-};
-
-export default ContactPage;
+}
