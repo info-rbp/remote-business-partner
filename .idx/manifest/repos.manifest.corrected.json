@@ -1,0 +1,219 @@
+{
+    "manifestVersion": "1.1",
+    "project": "remote-business-partner",
+    "description": "Corrected repository manifest for Firebase Studio and related application workspaces. This file references external and supporting repositories without storing all source code in the main workspace repo.",
+    "authoritativeRuntime": {
+      "activeBenchPath": "rbp-bench/rbp-bench",
+      "activeSite": "rbp.local",
+      "note": "Treat the inner bench as the authoritative development runtime."
+    },
+    "recommendedUsage": {
+      "defaultMode": "reference",
+      "submoduleCandidates": [
+        "rbp_core"
+      ],
+      "doNotVendAllSourcesIntoMainRepo": true
+    },
+    "repositories": [
+      {
+        "name": "Dolibarr",
+        "key": "dolibarr",
+        "url": "https://github.com/info-rbp/rpb-dolibarr-repository",
+        "type": "reference",
+        "purpose": "ERP/operations capability reference",
+        "notes": "External application reference for business operations capability."
+      },
+      {
+        "name": "Frappe",
+        "key": "frappe",
+        "url": "",
+        "type": "available-in-bench",
+        "purpose": "Core framework and active platform foundation",
+        "notes": "Already available in the active bench/runtime. No external link required in the manifest."
+      },
+      {
+        "name": "Metabase",
+        "key": "metabase",
+        "url": "https://github.com/info-rbp/rpb-metabase",
+        "type": "reference",
+        "purpose": "Analytics and BI capability",
+        "notes": "Reference for analytics/reporting integration."
+      },
+      {
+        "name": "Core",
+        "key": "rbp_core",
+        "url": "https://github.com/info-rbp/rbp-core",
+        "type": "submodule-candidate",
+        "purpose": "Custom platform shell and control plane",
+        "notes": "Best candidate for close source adjacency or submodule use because it directly affects platform behavior."
+      },
+      {
+        "name": "Odoo",
+        "key": "odoo",
+        "url": "https://github.com/info-rbp/odoo",
+        "type": "reference",
+        "purpose": "ERP/application capability reference",
+        "notes": "Reference unless direct source-level integration work is needed."
+      },
+      {
+        "name": "Authentik",
+        "key": "authentik",
+        "url": "https://github.com/info-rbp/rpb-authentik",
+        "type": "reference",
+        "purpose": "Identity and access management",
+        "notes": "Reference for identity/session integration patterns."
+      },
+      {
+        "name": "N8N",
+        "key": "n8n",
+        "url": "https://github.com/info-rbp/rpb-n8n",
+        "type": "reference",
+        "purpose": "Automation and workflow orchestration",
+        "notes": "Reference for automation/event flows."
+      },
+      {
+        "name": "Appsmith",
+        "key": "appsmith",
+        "url": "https://github.com/info-rbp/rpb-appsmith",
+        "type": "reference",
+        "purpose": "Admin/internal tooling interface",
+        "notes": "Reference for internal tools where applicable."
+      },
+      {
+        "name": "Ballerine",
+        "key": "ballerine",
+        "url": "https://github.com/info-rbp/rbp-ballerine",
+        "type": "reference",
+        "purpose": "KYC/compliance workflow capability",
+        "notes": "Reference for compliance and onboarding flows."
+      },
+      {
+        "name": "Easy Appointments",
+        "key": "easy_appointments",
+        "url": "https://github.com/info-rbp/rbp-easyappointments",
+        "type": "reference",
+        "purpose": "Appointment scheduling capability",
+        "notes": "Reference for bookings and appointment flows."
+      },
+      {
+        "name": "OpenBB",
+        "key": "openbb",
+        "url": "https://github.com/info-rbp/rbp-OpenBB",
+        "type": "reference",
+        "purpose": "Financial and market intelligence capability",
+        "notes": "Reference for finance/investment insights."
+      },
+      {
+        "name": "Marble",
+        "key": "marble",
+        "url": "https://github.com/info-rbp/rbp-marble",
+        "type": "reference",
+        "purpose": "Decisioning / risk workflow capability",
+        "notes": "Reference for risk and decisioning boundaries."
+      },
+      {
+        "name": "Hi.Events",
+        "key": "hi_events",
+        "url": "https://github.com/info-rbp/rbp-Hi.Events",
+        "type": "reference",
+        "purpose": "Events and ticketing capability",
+        "notes": "Reference for event-related features."
+      },
+      {
+        "name": "Docspell",
+        "key": "docspell",
+        "url": "https://github.com/info-rbp/rpb-docspell",
+        "type": "reference",
+        "purpose": "Document management / ingestion capability",
+        "notes": "Reference for document workflows."
+      },
+      {
+        "name": "Fleetbase",
+        "key": "fleetbase",
+        "url": "https://github.com/info-rbp/rbp-fleetbase",
+        "type": "reference",
+        "purpose": "Logistics / fleet operations capability",
+        "notes": "Reference for transport and logistics functions."
+      },
+      {
+        "name": "Financial Freedom",
+        "key": "financial_freedom",
+        "url": "https://github.com/info-rbp/rbp-financial-freedom",
+        "type": "reference",
+        "purpose": "Finance education / advisory capability",
+        "notes": "Reference for financial education/advisory experiences."
+      },
+      {
+        "name": "Tirreno",
+        "key": "tirreno",
+        "url": "https://github.com/info-rbp/rbp-tirreno",
+        "type": "reference",
+        "purpose": "Specialist external capability",
+        "notes": "Reference only until a clear integration contract is defined."
+      },
+      {
+        "name": "Chaskiq",
+        "key": "chaskiq",
+        "url": "https://github.com/info-rbp/rbp-chaskiq",
+        "type": "reference",
+        "purpose": "Customer messaging / support capability",
+        "notes": "Reference for communications and support flows."
+      },
+      {
+        "name": "KYC Check",
+        "key": "kyc_check",
+        "url": "https://github.com/adamsnows/kyc-check-nextjs",
+        "type": "reference",
+        "purpose": "KYC verification UI/reference implementation",
+        "notes": "External public repository reference."
+      },
+      {
+        "name": "Nexus",
+        "key": "nexus",
+        "url": "https://github.com/sonatype/nexus-public",
+        "type": "reference",
+        "purpose": "Artifact repository management",
+        "notes": "Reference for artifact management patterns where needed."
+      },
+      {
+        "name": "Ghostfolio",
+        "key": "ghostfolio",
+        "url": "https://github.com/ghostfolio/ghostfolio",
+        "type": "reference",
+        "purpose": "Portfolio/investment tracking capability",
+        "notes": "External public repository reference."
+      },
+      {
+        "name": "Apache Fineract",
+        "key": "apache_fineract",
+        "url": "https://github.com/apache/fineract",
+        "type": "reference",
+        "purpose": "Lending/core banking capability reference",
+        "notes": "External public repository reference."
+      },
+      {
+        "name": "Horilla",
+        "key": "horilla",
+        "url": "https://github.com/horilla-opensource/horilla/",
+        "type": "reference",
+        "purpose": "HR and people operations capability",
+        "notes": "External public repository reference."
+      },
+      {
+        "name": "Postiz",
+        "key": "postiz",
+        "url": "https://github.com/gitroomhq/postiz-app",
+        "type": "reference",
+        "purpose": "Social publishing / communications capability",
+        "notes": "External public repository reference."
+      },
+      {
+        "name": "Open Projects",
+        "key": "openproject",
+        "url": "https://github.com/opf/openproject",
+        "type": "reference",
+        "purpose": "Project and work management capability",
+        "notes": "External public repository reference."
+      }
+    ]
+  }

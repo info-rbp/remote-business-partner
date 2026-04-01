@@ -1,0 +1,222 @@
+# Launch Model Definitions for Modules and External Services (Stage 1 Contract)
+
+## Purpose
+
+This document defines **how anything in the platform is launched**.
+
+It ensures: - no random links - no frontend-invented behavior -
+consistent module execution - controlled integration of external systems
+
+If this document is ignored, the platform becomes a pile of buttons that
+open unpredictable things.
+
+------------------------------------------------------------------------
+
+# 1. Core Concept
+
+Every launchable item is a **governed object**, not a link.
+
+A launchable object must always define: - object_type - key -
+availability - launch_method - launch_target - reason_codes (if
+blocked) - remediation (if blocked)
+
+------------------------------------------------------------------------
+
+# 2. Launchable Object Types
+
+  Type                Description
+  ------------------- ---------------------------------------------------
+  platform_module     Core platform capability (Sales, Customers, etc.)
+  external_service    Third-party or repo-based system
+  admin_tool          Internal operational tools
+  reporting_surface   Dashboards / analytics
+  document_service    DocuShare / file-based services
+  learning_surface    LMS / knowledge systems
+
+------------------------------------------------------------------------
+
+# 3. Launch Methods
+
+Every object must define ONE method:
+
+  Method     Behaviour
+  ---------- ----------------------------------
+  native     Render inside platform
+  embed      Load inside controlled iframe
+  sso        Backend generates secure session
+  redirect   Controlled external redirect
+  none       Not launchable
+
+------------------------------------------------------------------------
+
+# 4. Availability States
+
+  State                 Meaning
+  --------------------- -------------------------
+  available             Launch allowed
+  restricted            No entitlement
+  pending               Awaiting activation
+  onboarding_required   Setup incomplete
+  billing_hold          Payment issue
+  compliance_hold       Compliance block
+  inactive              Disabled
+  maintenance           Temporarily unavailable
+
+Frontend must NEVER infer these.
+
+------------------------------------------------------------------------
+
+# 5. Standard Launch Model
+
+``` json
+{
+  "object_type": "platform_module",
+  "key": "sales",
+  "availability": "available",
+  "launch": {
+    "method": "native",
+    "route": "/app/modules/sales",
+    "target_url": null
+  },
+  "reason_codes": [],
+  "remediation": null
+}
+```
+
+------------------------------------------------------------------------
+
+# 6. Blocked Launch Example
+
+``` json
+{
+  "object_type": "platform_module",
+  "key": "finance",
+  "availability": "restricted",
+  "launch": {
+    "method": "none"
+  },
+  "reason_codes": ["ENTITLEMENT_MISSING"],
+  "remediation": {
+    "type": "upgrade_plan",
+    "route": "/portal/membership"
+  }
+}
+```
+
+------------------------------------------------------------------------
+
+# 7. Launch Execution Flow
+
+## Step 1: User clicks module
+
+Frontend calls: GET /launch/readiness/{type}/{key}
+
+## Step 2: Backend responds
+
+-   availability
+-   launch method
+-   reason codes
+-   remediation
+
+## Step 3: If allowed
+
+POST /launch/execute
+
+## Step 4: Backend returns execution
+
+``` json
+{
+  "execution": {
+    "method": "sso",
+    "target_url": "https://secure-launch"
+  }
+}
+```
+
+Frontend acts. Nothing more.
+
+------------------------------------------------------------------------
+
+# 8. Reason Codes
+
+  Code                    Meaning
+  ----------------------- ----------------------
+  ENTITLEMENT_MISSING     Not included in plan
+  BILLING_HOLD            Payment issue
+  ONBOARDING_INCOMPLETE   Setup required
+  ROLE_NOT_ALLOWED        Permission issue
+  MAINTENANCE             System unavailable
+
+------------------------------------------------------------------------
+
+# 9. Remediation Types
+
+  Type                  Action
+  --------------------- ------------------
+  upgrade_plan          Go to membership
+  resolve_billing       Go to billing
+  continue_onboarding   Resume setup
+  contact_support       Open support
+  none                  No action
+
+------------------------------------------------------------------------
+
+# 10. Admin Launch Configuration
+
+Admins must control:
+
+``` json
+{
+  "visibility": {
+    "client": true,
+    "admin": true
+  },
+  "launch": {
+    "method": "sso"
+  },
+  "requirements": {
+    "requires_entitlement": true,
+    "requires_onboarding": true
+  }
+}
+```
+
+------------------------------------------------------------------------
+
+# 11. Surface Rules
+
+## Public
+
+-   Can view
+-   Cannot launch privileged systems
+
+## Client
+
+-   Launch based on entitlement + state
+
+## Admin
+
+-   Full operational access (role dependent)
+
+## App Layer
+
+-   Central launch control
+
+------------------------------------------------------------------------
+
+# 12. Hard Rules
+
+Frontend must NOT: - construct URLs - decide access - bypass launch
+API - embed systems directly
+
+Backend must: - return full launch model - enforce all rules
+
+------------------------------------------------------------------------
+
+# Definition of Done
+
+-   Every module has a launch model
+-   Every external service has a launch model
+-   No raw links exist in UI
+-   All launches pass through API
+-   Blocked states are explainable

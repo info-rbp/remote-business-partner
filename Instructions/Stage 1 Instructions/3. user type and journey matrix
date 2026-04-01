@@ -1,0 +1,265 @@
+# User Type & Journey Matrix (Stage 1 Contract)
+
+## Purpose
+
+Define all user types, their permissions, and their core journeys across
+the platform. This ensures: - consistent UI behaviour - correct access
+control assumptions - clean API design later - no frontend-invented
+logic
+
+------------------------------------------------------------------------
+
+# 1. User Types Overview
+
+## Public User
+
+-   Not authenticated
+-   Access: Front-facing website only
+-   Goals:
+    -   understand platform
+    -   explore applications
+    -   review membership
+    -   convert to signup
+
+------------------------------------------------------------------------
+
+## Client Users
+
+### Account Owner
+
+-   Full control of organisation
+-   Can:
+    -   manage billing
+    -   manage users
+    -   access all entitled modules
+
+### Billing Contact
+
+-   Focus: payments and invoices
+-   Can:
+    -   view/pay invoices
+    -   manage payment methods
+
+### Team Admin
+
+-   Manages users and access
+-   Can:
+    -   invite/remove users
+    -   assign roles
+
+### Standard User
+
+-   Limited access
+-   Can:
+    -   use assigned modules
+    -   view resources
+
+### Read-Only User
+
+-   View only
+-   No actions
+
+------------------------------------------------------------------------
+
+## Admin Users
+
+### Platform Administrator
+
+-   Full system access
+
+### Operations Admin
+
+-   Manages workflows and operations
+
+### Support Admin
+
+-   Handles tickets and issues
+
+### Finance Admin
+
+-   Handles billing and payments
+
+### Content Admin
+
+-   Manages public content
+
+### Compliance Admin
+
+-   Handles onboarding/compliance
+
+------------------------------------------------------------------------
+
+# 2. Journey Matrix
+
+## Public Journeys
+
+### Explore Platform
+
+-   Start: Home
+-   End: Applications/Membership
+-   Actions:
+    -   browse content
+    -   click CTA
+
+### Register
+
+-   Start: Register page
+-   End: Account created
+-   States:
+    -   success
+    -   validation error
+
+------------------------------------------------------------------------
+
+## Client Journeys
+
+### Login → Dashboard
+
+-   Start: Sign in
+-   End: Portal dashboard
+-   States:
+    -   success
+    -   failed login
+
+### View Membership
+
+-   Start: Dashboard
+-   End: Membership page
+-   Actions:
+    -   upgrade/downgrade
+
+### Billing Flow
+
+-   Start: Billing page
+-   Actions:
+    -   pay invoice
+    -   update payment
+-   States:
+    -   success
+    -   failed payment
+    -   billing hold
+
+### Application Launch
+
+-   Start: Applications
+-   Actions:
+    -   launch module
+-   States:
+    -   allowed
+    -   restricted
+    -   onboarding required
+
+### Support Request
+
+-   Start: Support page
+-   Actions:
+    -   submit ticket
+-   States:
+    -   submitted
+    -   in progress
+    -   resolved
+
+------------------------------------------------------------------------
+
+## Admin Journeys
+
+### Manage Customers
+
+-   Start: Admin → Customers
+-   Actions:
+    -   view/edit accounts
+
+### Manage Entitlements
+
+-   Start: Admin → Memberships
+-   Actions:
+    -   assign/remove access
+
+### Manage Applications
+
+-   Start: Admin → Applications
+-   Actions:
+    -   configure visibility
+    -   set launch rules
+
+### Billing Oversight
+
+-   Start: Admin → Billing
+-   Actions:
+    -   review payments
+    -   trigger refunds
+
+### Support Management
+
+-   Start: Admin → Support
+-   Actions:
+    -   respond to tickets
+
+------------------------------------------------------------------------
+
+# 3. Cross-Surface Journeys
+
+### Purchase → Access
+
+-   Public → Portal → App
+-   Flow:
+    -   select plan
+    -   pay
+    -   entitlement granted
+    -   module visible
+
+### Onboarding → Activation
+
+-   Portal
+-   Flow:
+    -   onboarding tasks
+    -   compliance check
+    -   activation
+
+### Refund → Access Revocation
+
+-   Admin → Portal
+-   Flow:
+    -   refund issued
+    -   access removed or modified
+
+------------------------------------------------------------------------
+
+# 4. State Mapping
+
+Each journey must support:
+
+-   loading
+-   success
+-   error
+-   restricted
+-   pending
+-   onboarding
+-   billing hold
+
+------------------------------------------------------------------------
+
+# 5. Key Rules
+
+1.  UI must NOT decide access
+2.  Backend determines:
+    -   entitlements
+    -   billing status
+    -   onboarding state
+3.  UI only reflects state
+
+------------------------------------------------------------------------
+
+# 6. Output Requirements
+
+Firebase Studio must: - reflect user types visually - support role-based
+navigation - support all journey states - avoid hardcoding logic
+
+------------------------------------------------------------------------
+
+# Definition of Done
+
+-   All user types defined
+-   All journeys mapped
+-   States covered
+-   No ambiguity in access behaviour

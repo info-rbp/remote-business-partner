@@ -1,10 +1,12 @@
-
 import React from 'react';
 
 const ContactPage = () => {
   return (
-    <div>
-      <h1>Contact Page</h1>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <div className="container mx-auto p-8">
+        <h1 className="text-4xl font-bold mb-8">Contact</h1>
+        <p>This is a placeholder for the Contact page.</p>
+      </div>
     </div>
   );
 };

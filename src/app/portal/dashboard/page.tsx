@@ -1,0 +1,89 @@
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Bell, User, Settings, HelpCircle, Activity, FileText } from "lucide-react";
+import Link from "next/link";
+
+const quickStats = [
+  { title: "Active Applications", value: "3", icon: <Activity className="h-6 w-6 text-blue-500" /> },
+  { title: "Upcoming Invoice", value: "$49.99", icon: <FileText className="h-6 w-6 text-green-500" /> },
+  { title: "Team Members", value: "5", icon: <User className="h-6 w-6 text-purple-500" /> },
+];
+
+const recentActivities = [
+  { description: "New user registered: john.doe@example.com", timestamp: "2 hours ago" },
+  { description: "Subscription for 'Pro Plan' was renewed.", timestamp: "1 day ago" },
+  { description: "Invoice #INV-2023-001 was paid.", timestamp: "2 days ago" },
+];
+
+const quickLinks = [
+    { label: "Manage Subscription", href: "/portal/membership" },
+    { label: "View Invoices", href: "/portal/billing" },
+    { label: "Update Profile", href: "/portal/profile" },
+    { label: "Invite Team Member", href: "/portal/team" },
+]
+
+export default function DashboardPage() {
+  return (
+    <div className="space-y-6">
+      {/* Welcome Header */}
+      <header className="flex items-center justify-between">
+        <div>
+            <h1 className="text-2xl font-bold">Welcome back, Alex!</h1>
+            <p className="text-gray-500">Here's a snapshot of your account.</p>
+        </div>
+      </header>
+
+      {/* Quick Stats */}
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {quickStats.map((stat) => (
+          <Card key={stat.title}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                {stat.icon}
+            </CardHeader>
+            <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Recent Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="divide-y divide-gray-200">
+              {recentActivities.map((activity, index) => (
+                <li key={index} className="py-3">
+                  <p className="text-sm">{activity.description}</p>
+                  <p className="text-xs text-gray-500">{activity.timestamp}</p>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+
+        {/* Quick Links */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Links</CardTitle>
+             <CardDescription>Quickly access common actions.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4">
+             {quickLinks.map((link) => (
+                <Link key={link.href} href={link.href} passHref>
+                    <Button variant="outline" className="w-full justify-start text-left">
+                        {link.label}
+                    </Button>
+                </Link>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

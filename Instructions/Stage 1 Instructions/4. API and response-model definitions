@@ -1,0 +1,296 @@
+# API & Response Model Definitions (Stage 1 Contract)
+
+## Purpose
+
+Define a stable, backend-first contract for all frontend screens. This
+prevents the UI from inventing business logic and ensures Firebase
+Studio consumes predictable data.
+
+Principles: - Backend (Frappe platform shell) is the **source of
+truth** - UI is a **consumer of state**, not a decision-maker - All
+responses are **explicit, typed, and state-driven** - No implicit
+assumptions in the frontend
+
+------------------------------------------------------------------------
+
+# 1. API Design Rules
+
+## 1.1 General Rules
+
+-   All endpoints are **resource-based**
+-   Responses are **normalized JSON**
+-   Every response includes:
+    -   `status`
+    -   `data`
+    -   `meta`
+-   No hidden logic in frontend
+
+## 1.2 Standard Response Envelope
+
+``` json
+{
+  "status": "success | error",
+  "data": {},
+  "meta": {
+    "timestamp": "",
+    "request_id": "",
+    "user_role": "",
+    "account_state": ""
+  }
+}
+```
+
+## 1.3 Error Response
+
+``` json
+{
+  "status": "error",
+  "error": {
+    "code": "STRING_CODE",
+    "message": "Human readable message"
+  }
+}
+```
+
+------------------------------------------------------------------------
+
+# 2. Core API Domains
+
+## 2.1 Authentication
+
+### POST /auth/login
+
+### POST /auth/logout
+
+### GET /auth/session
+
+Response:
+
+``` json
+{
+  "user": {
+    "id": "",
+    "name": "",
+    "role": "",
+    "account_id": ""
+  },
+  "session": {
+    "expires_at": ""
+  }
+}
+```
+
+------------------------------------------------------------------------
+
+## 2.2 Dashboard
+
+### GET /dashboard
+
+``` json
+{
+  "summary": {
+    "membership": "Active",
+    "billing_status": "Current",
+    "notifications": 3
+  },
+  "modules": [
+    {
+      "name": "Sales",
+      "status": "available"
+    }
+  ],
+  "alerts": []
+}
+```
+
+------------------------------------------------------------------------
+
+## 2.3 Modules
+
+### GET /modules
+
+``` json
+{
+  "modules": [
+    {
+      "id": "sales",
+      "name": "Sales",
+      "status": "available | restricted | pending",
+      "launch": {
+        "method": "native | embed | sso | redirect",
+        "url": ""
+      }
+    }
+  ]
+}
+```
+
+------------------------------------------------------------------------
+
+## 2.4 Membership & Subscription
+
+### GET /subscription
+
+``` json
+{
+  "plan": {
+    "name": "Pro",
+    "renewal_date": ""
+  },
+  "entitlements": [
+    {
+      "type": "module",
+      "value": "sales"
+    }
+  ]
+}
+```
+
+------------------------------------------------------------------------
+
+## 2.5 Billing
+
+### GET /billing
+
+``` json
+{
+  "invoices": [
+    {
+      "id": "",
+      "amount": 100,
+      "status": "paid | unpaid | failed"
+    }
+  ],
+  "payment_status": "current | overdue | failed"
+}
+```
+
+------------------------------------------------------------------------
+
+## 2.6 Support
+
+### GET /support/tickets
+
+### POST /support/tickets
+
+``` json
+{
+  "tickets": [
+    {
+      "id": "",
+      "status": "open | in_progress | resolved"
+    }
+  ]
+}
+```
+
+------------------------------------------------------------------------
+
+## 2.7 Customer Profile
+
+### GET /profile
+
+``` json
+{
+  "user": {
+    "name": "",
+    "email": ""
+  },
+  "organisation": {
+    "name": ""
+  }
+}
+```
+
+------------------------------------------------------------------------
+
+# 3. State Model (Critical)
+
+Every API must return explicit states.
+
+## 3.1 Account State
+
+-   onboarding
+-   active
+-   billing_hold
+-   compliance_hold
+-   suspended
+
+## 3.2 Module State
+
+-   available
+-   restricted
+-   pending
+-   onboarding_required
+
+## 3.3 Billing State
+
+-   current
+-   overdue
+-   failed
+
+Frontend must only **display**, never derive.
+
+------------------------------------------------------------------------
+
+# 4. Launch Model (Module Execution)
+
+``` json
+{
+  "launch": {
+    "method": "native | embed | sso | redirect",
+    "url": "",
+    "requires_auth": true
+  }
+}
+```
+
+Rules: - No raw URLs exposed without backend validation - All launches
+governed by platform shell
+
+------------------------------------------------------------------------
+
+# 5. Role-Based Visibility
+
+APIs must include role context:
+
+``` json
+{
+  "meta": {
+    "role": "client_admin | user | platform_admin"
+  }
+}
+```
+
+Frontend uses this to: - show/hide navigation - adjust UI states
+
+------------------------------------------------------------------------
+
+# 6. Screen-to-API Mapping
+
+  Screen         Endpoint
+  -------------- ------------------
+  Dashboard      /dashboard
+  Modules        /modules
+  Subscription   /subscription
+  Billing        /billing
+  Support        /support/tickets
+  Profile        /profile
+
+------------------------------------------------------------------------
+
+# 7. What NOT to do
+
+-   Do NOT compute entitlement in frontend
+-   Do NOT infer billing status
+-   Do NOT hardcode module access
+-   Do NOT embed external services directly
+
+------------------------------------------------------------------------
+
+# Definition of Done
+
+-   Every screen has an endpoint
+-   Every endpoint returns explicit state
+-   No UI assumptions required
+-   Contract is stable and extendable
