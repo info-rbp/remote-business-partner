@@ -1,0 +1,1029 @@
+# Application Skeleton Build Instructions for Google AI Studio
+
+## Document Purpose
+
+This document defines exactly what must be built for the **original four-surface application skeleton** so the first pass in Google AI Studio produces the correct structure, routing, shell behavior, and screen inventory without inventing architecture, leaking business logic into the frontend, or exposing raw infrastructure.
+
+This is **not** the backend implementation guide. It is the **surface and interaction skeleton guide** for the initial UI build.
+
+The backend, platform shell, identity, entitlements, payments, and integrations remain authoritative in the platform architecture and must later connect into this skeleton through controlled contracts.
+
+---
+
+## Non-Negotiable Build Rules
+
+1. Build the product as **one platform with four visible layers/surfaces**:
+   - Front-Facing Website
+   - Client Portal
+   - Admin Portal
+   - Application Layer / Module System
+
+2. Treat the **platform shell** as the product control plane. The shell must conceptually own:
+   - Dashboard
+   - Modules
+   - Subscription
+   - Settings
+   - navigation
+   - cross-surface consistency
+   - entitlement-aware visibility
+   - launch-method awareness
+
+3. Do **not** let Google AI Studio invent business logic. The UI may show states, but it must not become the authority for:
+   - entitlements
+   - payment status
+   - onboarding/compliance state
+   - access control
+   - repository launch governance
+
+4. Do **not** expose raw infrastructure, raw external repositories, vendor admin panels, or uncontrolled service URLs in the public or client-facing skeleton.
+
+5. The skeleton must preserve **distinct surface behavior** for:
+   - public users
+   - client users
+   - admin users
+   even when the visual shell language is shared.
+
+6. Build screen states deliberately. Every major screen should be prepared for:
+   - loading
+   - empty
+   - success
+   - warning/attention
+   - restricted/denied
+   - error
+   - pending/onboarding/hold states where relevant
+
+---
+
+## High-Level Product Model
+
+The application must be represented as a **four-part experience**:
+
+```text
+/
+├── Front-Facing Website
+├── Client Portal
+├── Admin Portal
+└── Application Layer / Module System
+```
+
+### Recommended top-level route model
+
+```text
+/
+├── /                    -> Front-Facing Website
+├── /portal             -> Client Portal
+├── /admin              -> Admin Portal
+└── /app                -> Application Layer / Module System
+```
+
+---
+
+## What Google AI Studio Must Produce
+
+Google AI Studio must produce the following outputs:
+
+1. A **route-complete skeleton** for all four surfaces
+2. A **consistent design system application** across all surfaces
+3. A **shared shell language** with surface-specific variation
+4. A **screen inventory** for every route listed below
+5. A **navigation model** for each surface
+6. **State-aware page shells** prepared for backend-driven data later
+7. A **module launch experience** that feels governed, not like a loose app directory
+8. A **portal experience** that clearly separates public, client, admin, and application responsibilities
+
+The deliverable from AI Studio should be **clean prototype-grade UI structure**, not hardcoded fake operations pretending to be real product logic.
+
+---
+
+## Workspace Alignment
+
+This build must fit into the new workspace structure:
+
+```text
+application-workspace/
+  blueprint/
+  frontend/
+    app/
+    components/
+    features/
+    routes/
+    services/
+    auth/
+    design-system/
+  integration/
+    api-contracts/
+    response-models/
+    launch-models/
+  backend/
+    references/
+```
+
+### Recommended frontend organisation for the skeleton
+
+```text
+frontend/
+  app/
+    providers/
+    layouts/
+    shell/
+  components/
+    navigation/
+    cards/
+    panels/
+    sections/
+    forms/
+    feedback/
+    tables/
+    widgets/
+  features/
+    public-site/
+    client-portal/
+    admin-portal/
+    application-shell/
+    auth/
+  routes/
+    public/
+    portal/
+    admin/
+    app/
+  services/
+    mock-data/
+    ui-state/
+    route-config/
+  auth/
+    login/
+    register/
+    password-reset/
+    callback/
+  design-system/
+    tokens/
+    typography/
+    spacing/
+    components/
+    themes/
+```
+
+---
+
+# 1. Front-Facing Website Skeleton
+
+## Purpose
+
+The front-facing website is the **public commercial and explanatory surface**. It must:
+- explain the platform
+- package products, memberships, offers, and resources
+- support lead capture and enquiry
+- support DocuShare and product entry points
+- route users into sign-in, registration, booking, or purchase pathways
+
+## Primary routes
+
+```text
+/
+/home
+/docushare
+/applications
+/membership
+/offers
+/resources
+/help
+/contact
+/sign-in
+/register
+/forgot-password
+/reset-password
+/auth/callback
+```
+
+## Required navigation structure
+
+### Primary public nav
+- Home
+- Applications
+- Membership
+- Offers
+- Resources
+- Help
+- Contact
+- DocuShare
+
+### Header utility actions
+- Sign In
+- Register
+
+### Footer groups
+- Platform
+- Resources
+- Help
+- Contact
+- Legal / Privacy / Terms
+
+## Required pages and sections
+
+### 1. Home
+Must include:
+- hero section
+- value proposition
+- platform overview
+- featured offers
+- featured applications
+- membership CTA
+- resources teaser
+- help/contact CTA
+
+### 2. DocuShare
+Must include:
+- document marketplace landing
+- categories or filters
+- product cards
+- product detail template
+- purchase CTA pattern
+- sign-in or entitlement prompt pattern
+
+### 3. Applications
+Must include:
+- branded applications overview
+- capability cards
+- access model explanation
+- launch path explanation
+- demo or enquiry CTA
+
+### 4. Membership
+Must include:
+- plan comparison table
+- inclusions overview
+- access model explanation
+- onboarding/support explanation
+- sign-up CTA
+
+### 5. Offers
+Must include:
+- offers landing
+- promotion card layout
+- offer detail template
+- timing / expiry presentation pattern
+
+### 6. Resources
+Must include:
+- resource library landing
+- categories/tags
+- guides/articles/download cards
+- gated vs open content presentation pattern
+
+### 7. Help
+Must include:
+- support hub landing
+- FAQ structure
+- support pathway cards
+- knowledge/help shortcuts
+- optional booking/contact pathways
+
+### 8. Contact
+Must include:
+- contact pathways
+- sales/contact/support split
+- enquiry form structure
+- booking/discovery CTA
+
+### 9. Auth routes
+Must include:
+- sign-in screen
+- register screen
+- forgot password screen
+- reset password screen
+- auth callback/processing state screen
+
+## Public page-state requirements
+
+The public skeleton must support:
+- content-first marketing state
+- authenticated-user redirect state
+- empty state for content sections not yet populated
+- loading state for cards/lists
+- gated-access prompt state for protected assets
+- success/error form states
+
+## Public build warnings
+
+Google AI Studio must **not**:
+- expose raw repository links
+- expose raw infrastructure endpoints
+- present applications as a random tool list
+- treat DocuShare as a file dump
+- hardcode real CRM or entitlement logic into the UI
+
+---
+
+# 2. Client Portal Skeleton
+
+## Purpose
+
+The Client Portal is the **authenticated customer workspace**. It must answer:
+- What do I have access to?
+- What have I bought or subscribed to?
+- What can I do next?
+- Where is my billing information?
+- Where do I get help?
+
+## Primary routes
+
+```text
+/portal/dashboard
+/portal/membership
+/portal/billing
+/portal/docushare
+/portal/applications
+/portal/support
+/portal/resources
+/portal/profile
+/portal/team
+/portal/security
+```
+
+## Required client navigation structure
+
+### Main nav
+- Dashboard
+- My Membership
+- Billing
+- DocuShare Access
+- Applications
+- Support
+- Resources
+- Profile
+- Team
+- Security
+
+### Client shell components
+- top bar
+- account switch or organisation context area if needed
+- notifications/notices area
+- contextual status banner area
+- primary content panel
+- secondary action area
+
+## Required pages and sections
+
+### 1. Dashboard
+Must include:
+- welcome state
+- active membership summary
+- currently available applications
+- recent purchases
+- outstanding billing items
+- onboarding tasks
+- support/resource shortcuts
+- notices/account messages
+
+### 2. My Membership
+Must include:
+- current plan
+- billing frequency
+- renewal date
+- inclusions
+- module access summary
+- DocuShare entitlements
+- support entitlements
+- upgrade/downgrade CTA areas
+
+### 3. My Purchases and Billing
+Must include:
+- subscriptions
+- one-off purchases
+- invoices
+- receipts
+- refunds
+- payment failures
+- next billing date
+- outstanding balances
+- allowed actions area
+
+### 4. My DocuShare Access
+Must include:
+- included in membership
+- purchased
+- recommended
+- archived access
+- custom services
+
+### 5. My Applications
+Must include:
+- application launchpad
+- module cards
+- access status display
+- onboarding state display
+- launch method display
+- restricted / pending / hold notices
+- contextual help links
+
+### 6. Support and Help
+Must include:
+- submit ticket entry point
+- issue history layout
+- message/help layout
+- support booking placeholder if applicable
+- knowledge/help resources
+
+### 7. Resources and Learning
+Must include:
+- guides
+- learning content
+- onboarding material
+- resource cards
+- recommended next steps
+
+### 8. Profile and Team Access
+Must include:
+- organisation profile
+- contacts
+- billing contacts
+- user seats/team members
+- authentication preferences
+- notification settings
+
+### 9. Security
+Must include:
+- password/security settings layout
+- MFA placeholder/state area
+- session/device visibility area if desired
+- login activity placeholder if desired
+
+## Client portal state model to represent in UI
+
+The UI must be prepared to display:
+- active
+- onboarding
+- payment hold
+- compliance hold
+- pending activation
+- restricted/no entitlement
+- support escalation
+
+## Client portal build warnings
+
+Google AI Studio must **not** decide:
+- which modules a user truly owns
+- whether billing status blocks access
+- whether the user is entitled to a resource
+- which launch method is actually allowed
+
+The client portal may **show** those states, but the backend must later determine them.
+
+---
+
+# 3. Admin Portal Skeleton
+
+## Purpose
+
+The Admin Portal is the **internal operating console**. It must control:
+- front-facing content
+- DocuShare products
+- memberships and entitlements
+- offers and campaigns
+- application listings and launch settings
+- customer account state
+- support/service oversight
+- payment monitoring and exception handling
+- reporting and operational visibility
+
+## Primary routes
+
+```text
+/admin/dashboard
+/admin/content
+/admin/docushare
+/admin/memberships
+/admin/entitlements
+/admin/applications
+/admin/customers
+/admin/support
+/admin/billing
+/admin/analytics
+/admin/permissions
+/admin/audit
+/admin/settings
+```
+
+## Required admin navigation structure
+
+### Main nav
+- Dashboard
+- Content
+- DocuShare
+- Memberships
+- Entitlements
+- Applications
+- Customers
+- Support
+- Billing
+- Analytics
+- Permissions
+- Audit
+- Settings
+
+### Admin shell components
+- top bar
+- admin context/status banner
+- notifications/alerts area
+- role-aware navigation placeholders
+- workspace header with actions
+- table/list/detail layout patterns
+
+## Required pages and sections
+
+### 1. Admin Dashboard
+Must include:
+- KPI strip
+- operational alerts
+- payment alerts
+- support volume overview
+- onboarding/compliance queue summary
+- launch issues summary
+- recent admin activity
+
+### 2. Website and Content Management
+Must include:
+- pages list pattern
+- page editor placeholder structure
+- section blocks
+- banners
+- CTAs
+- FAQs
+- resources
+- application profile content
+- membership page content
+- contact routing placeholders
+
+### 3. DocuShare Catalogue Management
+Must include:
+- product list
+- product detail/edit layout
+- assets/files area
+- pricing area
+- visibility area
+- membership inclusion area
+- publication lifecycle area
+
+### 4. Membership and Entitlement Management
+Must include:
+- plans list
+- plan detail
+- inclusions editor placeholder
+- billing cadence presentation
+- module access rights area
+- DocuShare rights area
+- support level area
+- upgrade path area
+- override rules area
+
+### 5. Applications and Launch Management
+Must include:
+- application list
+- visibility settings area
+- access rules area
+- launch method display/editor placeholder
+- onboarding instructions area
+- module-specific FAQ/help area
+- launch settings area
+
+### 6. Customer Management
+Must include:
+- customer list
+- customer detail
+- membership status
+- purchases
+- application access
+- billing state
+- support history
+- onboarding progress
+- documents
+- compliance state
+
+### 7. Support and Service Management
+Must include:
+- ticket queues
+- SLA/status boards
+- escalation views
+- communication history area
+- support bookings placeholder
+
+### 8. Payment and Billing Oversight
+Must include:
+- payment state overview
+- failed payments
+- billing timeline view
+- refunds area
+- resend payment link action placeholder
+- webhook/event state placeholder
+
+### 9. Analytics and Reporting
+Must include:
+- KPI dashboard grid
+- operational trend widgets
+- domain-specific dashboard placeholders
+- publish/report filter area
+
+### 10. Roles, Permissions, and Audit
+Must include:
+- admin users list
+- role groups / permission bands placeholder
+- approvals queue placeholder
+- audit timeline/list
+- exception handling area
+
+### 11. Platform Settings / Integrations
+Must include:
+- module visibility config area
+- navigation rules config placeholder
+- integration connections placeholder
+- webhook endpoints placeholder
+- security policy placeholder
+- feature flags/override placeholder
+
+## Admin user-class assumptions for skeleton
+
+The skeleton should be visually prepared for these admin user classes:
+- Platform Administrator
+- Content Administrator
+- Commerce Administrator
+- Customer Success / Support Administrator
+- Finance Administrator
+- Operations Administrator
+- Compliance Administrator
+
+This does **not** mean hardcoding permissions. It means designing the admin portal for role-aware variation later.
+
+## Admin build warnings
+
+Google AI Studio must **not**:
+- turn the admin portal into a disconnected separate product
+- assume every admin can do everything
+- expose sensitive operational data in public/client patterns
+- assume workflow approval is optional for high-risk actions
+
+---
+
+# 4. Application Layer / Module System Skeleton
+
+## Purpose
+
+The application layer is the **governed module system inside the platform shell**. It must not feel like a random app directory.
+
+The shell navigation for this area is:
+- Dashboard
+- Modules
+- Subscription
+- Settings
+
+## Primary routes
+
+```text
+/app/dashboard
+/app/modules
+/app/modules/customers
+/app/modules/sales
+/app/modules/operations
+/app/modules/finance
+/app/modules/lending
+/app/modules/compliance
+/app/modules/people
+/app/modules/support
+/app/modules/knowledge
+/app/modules/learning
+/app/modules/communications
+/app/modules/teams
+/app/modules/insights
+/app/subscription
+/app/settings
+```
+
+## Required shell structure
+
+### 1. Dashboard
+Must include:
+- user-specific overview
+- alerts/notices
+- quick actions
+- recently used modules
+- next-step recommendations
+- status widgets
+
+### 2. Modules catalogue
+Must include:
+- searchable/filterable module grid or list
+- module cards
+- category grouping
+- availability status
+- launch method display
+- onboarding requirement indicator
+- pending/restricted state handling
+
+### 3. Subscription
+Must include:
+- plan summary
+- billing summary
+- add-ons placeholder
+- entitlement summary
+- quota/usage placeholder
+- renewal/payment method area
+
+### 4. Settings
+Must include:
+- user/account settings
+- team access placeholder
+- notifications
+- security
+- connected services placeholder
+
+## Required module cards state model
+
+Every module card must be able to display:
+- available
+- restricted
+- onboarding required
+- pending
+- inactive
+
+Every module card must also support launch method display for:
+- native
+- embedded
+- SSO
+- controlled redirect
+
+## Required module catalogue list
+
+The skeleton must include placeholders for the following module families:
+- Customers
+- Sales
+- Operations
+- Finance
+- Lending
+- Compliance
+- People
+- Support
+- Knowledge
+- Learning
+- Communications
+- Teams
+- Insights
+
+The early-priority visual emphasis should be on:
+- Customers
+- Sales
+- Operations
+- Support
+- Subscription / Entitlements
+- Insights baseline
+- Finance where billing trust is critical
+
+---
+
+# 5. Shared Design-System Requirements
+
+Google AI Studio must apply a **single design system** across all four surfaces with controlled variation.
+
+## Required shared primitives
+
+The skeleton should include reusable components for:
+- page layout
+- surface shell layout
+- section panel
+- summary card
+- module tile/card
+- navigation group
+- status badge
+- alerts/notices banner
+- empty state
+- loading state
+- error state
+- table/list/detail layout
+- CTA group
+- hero block
+- content block
+- form shell
+
+## Required state variants
+
+At minimum support:
+- default
+- success
+- warning
+- critical/danger
+- info
+- loading
+- disabled/restricted
+
+## Required consistency rules
+
+1. Public, client, admin, and app surfaces must feel like one platform
+2. Each surface must still be visually distinct enough to avoid confusion
+3. Navigation patterns must be recognisable across surfaces
+4. Card, panel, and status patterns must be reusable across portals and app layer
+5. The module catalogue must feel governed and productised, not improvised
+
+---
+
+# 6. Global Route and Navigation Rules
+
+## Public route group
+Routes under `/` are public-first and conversion-led.
+
+## Client route group
+Routes under `/portal` are authenticated, account-aware, and customer-specific.
+
+## Admin route group
+Routes under `/admin` are authenticated, staff-only, and role-sensitive.
+
+## Application route group
+Routes under `/app` are governed by the platform shell and module visibility rules.
+
+## Build rule
+All route groups must exist in the skeleton, even if some screen content is placeholder-only in the first pass.
+
+---
+
+# 7. What Must Be Mocked vs What Must Be Defined
+
+## Safe to mock in AI Studio
+- page copy
+- sample cards
+- placeholder tables
+- KPI widgets
+- alert banners
+- fake notices
+- empty-state content
+- module tiles and status examples
+- example invoices/receipts/resources/documents
+
+## Must be defined conceptually before or during build
+- route model
+- surface separation
+- navigation groups
+- major screen purposes
+- state vocabulary
+- user-role assumptions
+- module catalogue categories
+- launch method vocabulary
+
+## Must not be faked into permanent product logic
+- real entitlements
+- real billing logic
+- real access decisions
+- real onboarding/compliance decisions
+- real SSO/session logic
+- real repository launch governance
+
+---
+
+# 8. Skeleton Build Order for Google AI Studio
+
+Google AI Studio should build in this exact order.
+
+## Phase A: Shared foundation
+1. Global design system
+2. Shared primitives
+3. Route group scaffolding
+4. Shared shell language
+5. Status and feedback patterns
+
+## Phase B: Surface shells
+6. Front-Facing Website shell
+7. Client Portal shell
+8. Admin Portal shell
+9. Application Layer shell
+
+## Phase C: Core navigation
+10. Public navigation and footer
+11. Client portal navigation
+12. Admin portal navigation
+13. Application shell navigation
+
+## Phase D: MVP screen set
+14. Public: Home, Applications, Membership, Resources, Help, Sign In, Register
+15. Client: Dashboard, Membership, Billing, Applications, Support
+16. Admin: Dashboard, Content, Memberships/Entitlements, Applications, Customers, Billing, Analytics
+17. App shell: Dashboard, Modules, Subscription, Settings
+
+## Phase E: Secondary screen expansion
+18. Public: Offers, Contact, DocuShare
+19. Client: DocuShare, Resources, Profile, Team, Security
+20. Admin: DocuShare, Support, Permissions, Audit, Settings
+21. App shell: individual module detail screens/placeholders
+
+## Phase F: Screen-state coverage
+22. Add loading, empty, error, restricted, pending, hold, and success states to all key screens
+23. Add route guards/placeholders visually, but not real auth logic yet
+24. Add launch-method display patterns
+
+---
+
+# 9. Required Deliverables from Google AI Studio
+
+Google AI Studio must produce:
+
+1. Complete route skeleton for all four surfaces
+2. Navigation skeleton for all four surfaces
+3. Shared shell and layout system
+4. Design system primitives and reusable UI patterns
+5. Screen inventory aligned to the routes in this document
+6. State variations for the main workflows and status conditions
+7. A governed module catalogue experience
+8. Public, client, admin, and application screens that clearly look like parts of one platform
+
+---
+
+# 10. Screen Inventory Checklist
+
+## Front-Facing Website
+- [ ] Home
+- [ ] DocuShare
+- [ ] Applications
+- [ ] Membership
+- [ ] Offers
+- [ ] Resources
+- [ ] Help
+- [ ] Contact
+- [ ] Sign In
+- [ ] Register
+- [ ] Forgot Password
+- [ ] Reset Password
+- [ ] Auth Callback
+
+## Client Portal
+- [ ] Dashboard
+- [ ] Membership
+- [ ] Billing
+- [ ] DocuShare Access
+- [ ] Applications
+- [ ] Support
+- [ ] Resources
+- [ ] Profile
+- [ ] Team
+- [ ] Security
+
+## Admin Portal
+- [ ] Dashboard
+- [ ] Content
+- [ ] DocuShare
+- [ ] Memberships
+- [ ] Entitlements
+- [ ] Applications
+- [ ] Customers
+- [ ] Support
+- [ ] Billing
+- [ ] Analytics
+- [ ] Permissions
+- [ ] Audit
+- [ ] Settings
+
+## Application Layer
+- [ ] Dashboard
+- [ ] Modules catalogue
+- [ ] Customers
+- [ ] Sales
+- [ ] Operations
+- [ ] Finance
+- [ ] Lending
+- [ ] Compliance
+- [ ] People
+- [ ] Support
+- [ ] Knowledge
+- [ ] Learning
+- [ ] Communications
+- [ ] Teams
+- [ ] Insights
+- [ ] Subscription
+- [ ] Settings
+
+---
+
+# 11. Final Constraints for AI Studio
+
+Google AI Studio must follow these constraints exactly:
+
+1. Build the UI as a **skeleton and prototype layer**, not as the final owner of platform logic.
+2. Respect the four-surface architecture.
+3. Respect the shell navigation model.
+4. Keep the module layer governed and coherent.
+5. Prepare all key screens for backend-driven states later.
+6. Do not expose raw repositories, vendor tools, or infrastructure directly.
+7. Do not collapse public, client, admin, and app experiences into one undifferentiated dashboard.
+8. Do not invent permissions or billing logic in the frontend.
+9. Do not skip routes because a screen is not fully detailed yet.
+10. Deliver a structure that can later be wired into the platform shell, identity layer, payments, and integrations without a second architectural rewrite.
+
+---
+
+# 12. Definition of Success
+
+This skeleton is successful when:
+
+- the entire four-surface sitemap exists visually
+- every required route has a screen shell
+- navigation is consistent and surface-specific
+- the app layer feels like a governed platform, not a tool list
+- the client portal clearly reflects account/access/billing/support concerns
+- the admin portal clearly reflects control/oversight/configuration concerns
+- the public site clearly reflects explanation, conversion, and entry concerns
+- nothing in the frontend requires backend architecture to be reinvented later
+
