@@ -1,11 +1,9 @@
-import PublicLayout from '../(public)/layout';
 
-export default function Docushare() {
+export default function DocuSharePage() {
   return (
-    <PublicLayout>
-      <main className="container mx-auto p-4">
-        <h1 className="text-4xl font-bold">DocuShare</h1>
-      </main>
-    </PublicLayout>
+    <div className="container mx-auto p-8">
+      <h1 className="text-4xl font-bold mb-4">DocuShare</h1>
+      <p>This is a placeholder for the DocuShare page.</p>
+    </div>
   );
 }

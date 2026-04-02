@@ -1,13 +1,15 @@
-import React from 'react';
-import Header from '@/components/header';
+import React from "react";
+import PortalSidebar from "@/components/navigation/PortalSidebar";
+import ClientHeader from "@/components/navigation/ClientHeader";
 
-const PortalLayout = ({ children }: { children: React.ReactNode }) => {
+export default function PortalLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <Header />
-      {children}
+    <div className="min-h-screen flex">
+      <PortalSidebar />
+      <div className="flex-grow flex flex-col">
+        <ClientHeader />
+        <main className="flex-1 p-8 bg-gray-50">{children}</main>
+      </div>
     </div>
   );
-};
-
-export default PortalLayout;
+}

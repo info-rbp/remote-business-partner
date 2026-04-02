@@ -1,39 +1,135 @@
-import React from 'react';
 
-const BillingPage = () => {
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Download } from "lucide-react";
+
+const subscriptions = [
+    { name: "Premium Plan", status: "Active", price: "$99.99/month", nextBilling: "December 1, 2023" }
+];
+
+const purchaseHistory = [
+    { id: "P-001", item: "DocuShare Pro Template", date: "October 15, 2023", amount: "$29.99" },
+];
+
+const invoices = [
+    { id: "INV-2023-001", date: "November 1, 2023", amount: "$99.99", status: "Paid" },
+    { id: "INV-2023-002", date: "October 1, 2023", amount: "$99.99", status: "Paid" },
+];
+
+export default function BillingPage() {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold mb-8">Billing</h1>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">Purchases</h2>
-          <p>No recent purchases.</p>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">Subscriptions</h2>
-          <p>You have an active subscription to the <span className="font-bold text-blue-500">Premium Plan</span>.</p>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">Invoices</h2>
-          <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-            <li className="py-4 flex justify-between items-center">
-              <div>
-                <p className="font-bold">Invoice #12345</p>
-                <p className="text-sm text-gray-500">Billed on October 26, 2023</p>
-              </div>
-              <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                Download
-              </button>
-            </li>
-          </ul>
-        </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-4">Billing Status</h2>
-          <p>Your account is in good standing.</p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-bold">Billing</h1>
+        <p className="text-gray-500">Manage your subscriptions, view purchase history, and access your invoices.</p>
+      </header>
+
+      {/* Subscriptions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Subscriptions</CardTitle>
+          <CardDescription>Your active and past subscription plans.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Plan</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Next Billing Date</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {subscriptions.map((sub) => (
+                <TableRow key={sub.name}>
+                  <TableCell className="font-medium">{sub.name}</TableCell>
+                  <TableCell>
+                    <Badge variant={sub.status === 'Active' ? 'default' : 'secondary'}>
+                      {sub.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{sub.price}</TableCell>
+                  <TableCell>{sub.nextBilling}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+      
+      {/* Purchase History */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Purchase History</CardTitle>
+          <CardDescription>A record of your one-off purchases.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Order ID</TableHead>
+                <TableHead>Item</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {purchaseHistory.map((purchase) => (
+                <TableRow key={purchase.id}>
+                  <TableCell>{purchase.id}</TableCell>
+                  <TableCell>{purchase.item}</TableCell>
+                  <TableCell>{purchase.date}</TableCell>
+                  <TableCell>{purchase.amount}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {/* Invoices */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Invoices</CardTitle>
+          <CardDescription>Access and download your past invoices.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Invoice ID</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {invoices.map((invoice) => (
+                <TableRow key={invoice.id}>
+                  <TableCell>{invoice.id}</TableCell>
+                  <TableCell>{invoice.date}</TableCell>
+                  <TableCell>{invoice.amount}</TableCell>
+                  <TableCell>
+                     <Badge variant={invoice.status === 'Paid' ? 'default' : 'destructive'}>
+                      {invoice.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button variant="outline" size="sm">
+                        <Download className="mr-2 h-4 w-4" />
+                        Download
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default BillingPage;
+}

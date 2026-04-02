@@ -1,64 +1,79 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Folder, File, Search, Download } from "lucide-react";
+import { FileText, Download } from "lucide-react";
 
-const documents = [
-    { name: "Onboarding Guide.pdf", type: "file", size: "2.5 MB", lastModified: "2023-10-26" },
-    { name: "Q3 Financial Report.docx", type: "file", size: "1.2 MB", lastModified: "2023-10-25" },
-    { name: "Marketing Proposal.pptx", type: "file", size: "5.8 MB", lastModified: "2023-10-24" },
-    { name: "Project Alpha", type: "folder", files: 3, lastModified: "2023-10-23" },
-    { name: "Archived Documents", type: "folder", files: 12, lastModified: "2023-10-20" },
+const includedDocuments = [
+    { name: "Onboarding Checklist", type: "PDF" },
+    { name: "Service Level Agreement", type: "PDF" }
+];
+
+const purchasedDocuments = [
+    { name: "DocuShare Pro Template", type: "DOCX" },
+    { name: "Financial Projection Model", type: "XLSX" }
 ];
 
 export default function DocuSharePage() {
-    return (
-        <div className="space-y-6">
-            <header>
-                <h1 className="text-2xl font-bold">DocuShare Access</h1>
-                <p className="text-gray-500">Browse, search, and download your purchased or included documents.</p>
-            </header>
+  return (
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-bold">DocuShare Access</h1>
+        <p className="text-gray-500">Access your included and purchased documents.</p>
+      </header>
 
-            {/* Search and Upload */}
-            <div className="flex justify-between items-center">
-                <div className="relative w-full max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <Input placeholder="Search documents..." className="pl-10" />
+      {/* Included in Your Membership */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Included in Your Membership</CardTitle>
+          <CardDescription>These documents are part of your current plan.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="divide-y divide-gray-200">
+            {includedDocuments.map((doc, index) => (
+              <li key={index} className="flex items-center justify-between py-3">
+                <div className="flex items-center">
+                    <FileText className="h-6 w-6 text-blue-500 mr-4" />
+                    <div>
+                        <p className="font-medium">{doc.name}</p>
+                        <p className="text-sm text-gray-500">{doc.type}</p>
+                    </div>
                 </div>
-                <Button>Upload Document</Button>
-            </div>
+                <Button variant="outline" size="sm">
+                   <Download className="mr-2 h-4 w-4" />
+                   Download
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
 
-            {/* Document List */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Your Documents</CardTitle>
-                    <CardDescription>A list of all your accessible files and folders.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <ul className="divide-y divide-gray-200">
-                        {documents.map(doc => (
-                            <li key={doc.name} className="py-4 flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    {doc.type === 'folder' ? <Folder className="h-6 w-6 text-yellow-500" /> : <File className="h-6 w-6 text-blue-500" />}
-                                    <div>
-                                        <p className="font-semibold">{doc.name}</p>
-                                        {doc.type === 'folder' ? 
-                                            <p className="text-sm text-gray-500">{doc.files} files</p> : 
-                                            <p className="text-sm text-gray-500">{doc.size}</p>}
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <p className="text-sm text-gray-500">Last modified: {doc.lastModified}</p>
-                                    <Button variant="outline" size="icon">
-                                        <Download className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </CardContent>
-            </Card>
-        </div>
-    );
+      {/* Your Purchased Documents */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Your Purchased Documents</CardTitle>
+           <CardDescription>Documents you have purchased individually.</CardDescription>
+        </CardHeader>
+        <CardContent>
+           <ul className="divide-y divide-gray-200">
+            {purchasedDocuments.map((doc, index) => (
+              <li key={index} className="flex items-center justify-between py-3">
+                <div className="flex items-center">
+                    <FileText className="h-6 w-6 text-green-500 mr-4" />
+                    <div>
+                        <p className="font-medium">{doc.name}</p>
+                        <p className="text-sm text-gray-500">{doc.type}</p>
+                    </div>
+                </div>
+                <Button variant="outline" size="sm">
+                   <Download className="mr-2 h-4 w-4" />
+                   Download
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }

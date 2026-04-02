@@ -1,39 +1,94 @@
-import React from 'react';
+'use client';
 
-const SupportPage = () => {
-  return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold mb-8">Support</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Submit a Ticket</h2>
-            <form>
-              <div className="mb-4">
-                <label htmlFor="subject" className="block text-lg font-medium mb-2">Subject</label>
-                <input type="text" id="subject" className="w-full p-2 rounded bg-gray-200 dark:bg-gray-700" />
-              </div>
-              <div className="mb-4">
-                <label htmlFor="message" className="block text-lg font-medium mb-2">Message</label>
-                <textarea id="message" rows="4" className="w-full p-2 rounded bg-gray-200 dark:bg-gray-700"></textarea>
-              </div>
-              <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                Submit
-              </button>
-            </form>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Issue History</h2>
-            <p>No recent issues.</p>
-          </div>
-        </div>
-        <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-4">Guidance and Escalation</h2>
-          <p>For urgent issues, please call our 24/7 support line at <span className="font-bold">1-800-123-4567</span>.</p>
-        </div>
-      </div>
-    </div>
-  );
+import { useState, useEffect } from 'react';
+import { SupportTicket } from '@/lib/mock-support-data';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+
+const getBadgeVariant = (status: 'open' | 'in_progress' | 'resolved') => {
+    switch (status) {
+        case 'open':
+            return 'secondary';
+        case 'in_progress':
+            return 'default';
+        case 'resolved':
+            return 'outline';
+    }
 };
 
-export default SupportPage;
+export default function SupportPage() {
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const response = await fetch('/api/support/tickets');
+        if (!response.ok) {
+          throw new Error('Failed to fetch support tickets');
+        }
+        const data = await response.json();
+        setTickets(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTickets();
+  }, []);
+
+  return (
+    <div className="container mx-auto p-8">
+      <h1 className="text-4xl font-bold mb-8">Support Tickets</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>Your Support Requests</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading && <p>Loading tickets...</p>}
+          {error && <p className="text-red-500">{error}</p>}
+          {!isLoading && !error && (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Ticket ID</TableHead>
+                  <TableHead>Subject</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Last Updated</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tickets.map((ticket) => (
+                  <TableRow key={ticket.id}>
+                    <TableCell>{ticket.id}</TableCell>
+                    <TableCell>{ticket.subject}</TableCell>
+                    <TableCell>
+                        <Badge variant={getBadgeVariant(ticket.status)}>{ticket.status.replace(/_/g, ' ')}</Badge>
+                    </TableCell>
+                    <TableCell>{new Date(ticket.lastUpdated).toLocaleDateString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

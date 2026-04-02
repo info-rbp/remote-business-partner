@@ -1,11 +1,13 @@
-import PublicLayout from '../(public)/layout';
+import AboutUsHeroSection from '@/components/public/AboutUsHeroSection';
+import OurMission from '@/components/public/OurMission';
+import OurTeam from '@/components/public/OurTeam';
 
-export default function About() {
+export default function AboutPage() {
   return (
-    <PublicLayout>
-      <main className="container mx-auto p-4">
-        <h1 className="text-4xl font-bold">About</h1>
-      </main>
-    </PublicLayout>
+    <>
+      <AboutUsHeroSection />
+      <OurMission />
+      <OurTeam />
+    </>
   );
 }

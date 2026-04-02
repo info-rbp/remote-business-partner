@@ -1,14 +1,23 @@
-import React from 'react';
+import ModuleCard from '@/components/app/ModuleCard';
+import { mockLaunchData } from '@/lib/mock-launch-data';
+import { LaunchableObject } from '@/lib/types';
 
-const DashboardPage = () => {
-  return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold mb-8">Application Dashboard</h1>
-        <p>This is a placeholder for the Application Dashboard.</p>
-      </div>
-    </div>
-  );
-};
+async function getLaunchData(): Promise<LaunchableObject[]> {
+    // In a real app, this would be an API call
+    return Promise.resolve(mockLaunchData.filter(item => item.object_type === 'platform_module'));
+}
 
-export default DashboardPage;
+export default async function DashboardPage() {
+    const modules = await getLaunchData();
+
+    return (
+        <div className="container mx-auto p-8">
+            <h1 className="text-4xl font-bold mb-8">Application Dashboard</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {modules.map((module) => (
+                    <ModuleCard key={module.key} module={module} />
+                ))}
+            </div>
+        </div>
+    );
+}

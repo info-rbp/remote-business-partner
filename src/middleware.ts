@@ -1,32 +1,33 @@
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+export async function middleware(request: NextRequest) {
+  const session = request.cookies.get('session');
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  // Redirect to login if session cookie is not set and trying to access protected routes
+  if (!session) {
+    if (request.nextUrl.pathname.startsWith('/app') || request.nextUrl.pathname.startsWith('/portal') || request.nextUrl.pathname.startsWith('/admin')) {
+        return NextResponse.redirect(new URL('/sign-in', request.url));
+    }
+    return NextResponse.next();
+  }
 
-  // Redirects
-  if (pathname === '/') {
-    return NextResponse.redirect(new URL('/home', request.url));
-  }
-  if (pathname === '/portal') {
-    return NextResponse.redirect(new URL('/portal/dashboard', request.url));
-  }
-  if (pathname === '/admin') {
-    return NextResponse.redirect(new URL('/admin/dashboard', request.url));
-  }
-  if (pathname === '/app') {
+  // If the user is authenticated, redirect them from auth pages to the app dashboard
+  if (request.nextUrl.pathname.startsWith('/sign-in') || request.nextUrl.pathname.startsWith('/register')) {
     return NextResponse.redirect(new URL('/app/dashboard', request.url));
   }
 
-  return NextResponse.next();
+  try {
+    // TODO: Add a server-side check to verify the session cookie with Firebase Admin SDK
+    // This would typically involve an API route or a server function that the middleware calls.
+    // For now, we will assume the cookie is valid if it exists.
+    return NextResponse.next();
+  } catch (error) {
+    // If verification fails, redirect to login
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
 }
 
 export const config = {
-  matcher: [
-    '/',
-    '/portal',
-    '/admin',
-    '/app',
-  ],
-};
+    matcher: ['/app/:path*', '/portal/:path*', '/admin/:path*', '/sign-in', '/register'],
+}

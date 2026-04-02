@@ -1,11 +1,13 @@
-import PublicLayout from '../(public)/layout';
+import SupportForm from '@/components/public/SupportForm';
 
-export default function Help() {
+export default function HelpPage() {
   return (
-    <PublicLayout>
-      <main className="container mx-auto p-4">
-        <h1 className="text-4xl font-bold">Help</h1>
-      </main>
-    </PublicLayout>
+    <div className="container mx-auto px-4 py-16">
+      <h1 className="text-4xl font-bold text-center mb-8">Help & Support</h1>
+      <p className="text-center mb-8">
+        Have a question or need help? Fill out the form below and we'll get back to you as soon as possible.
+      </p>
+      <SupportForm />
+    </div>
   );
 }

@@ -1,44 +1,68 @@
-import React from 'react';
+'use client';
 
-const ProfilePage = () => {
-  return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold mb-8">Profile</h1>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-4">Organization Profile</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-2">Organization Name</h3>
-              <p>Example Corp</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-2">Primary Contact</h3>
-              <p>John Doe</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-2">Email</h3>
-              <p>john.doe@example.com</p>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold mb-2">Phone</h3>
-              <p>123-456-7890</p>
-            </div>
-          </div>
-          <div className="mt-8">
-            <h3 className="text-xl font-bold mb-2">Preferences</h3>
-            <div className="flex items-center">
-              <input type="checkbox" id="email-notifications" className="mr-2" />
-              <label htmlFor="email-notifications">Receive email notifications</label>
-            </div>
-          </div>
-          <button className="mt-8 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-            Edit Profile
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+import { useFormState, useFormStatus } from 'react-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useEffect } from 'react';
+
+const initialState = {
+  message: null,
+  errors: null,
 };
 
-export default ProfilePage;
+async function updateProfile(prevState: any, formData: FormData) {
+    'use server';
+    console.log('Profile updated:', {
+        name: formData.get('name'),
+        email: formData.get('email'),
+    });
+    return { message: 'Profile updated successfully!' };
+}
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+  
+    return (
+      <Button type="submit" disabled={pending}>
+        {pending ? 'Saving...' : 'Save Changes'}
+      </Button>
+    );
+}
+
+export default function ProfilePage() {
+    const [state, formAction] = useFormState(updateProfile, initialState);
+
+    useEffect(() => {
+        if (state.message) {
+          alert(state.message);
+        }
+      }, [state.message]);
+
+  return (
+    <div className="container mx-auto p-8">
+      <h1 className="text-4xl font-bold mb-8">Your Profile</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>Edit your profile information</CardTitle>
+        </CardHeader>
+        <form action={formAction}>
+            <CardContent className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input id="name" name="name" defaultValue="John Doe" />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input id="email" name="email" type="email" defaultValue="john.doe@example.com" />
+                </div>
+            </CardContent>
+            <CardFooter>
+                <SubmitButton />
+            </CardFooter>
+        </form>
+      </Card>
+    </div>
+  );
+}

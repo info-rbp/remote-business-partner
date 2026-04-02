@@ -1,14 +1,26 @@
-import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-const LendingPage = () => {
+export default function LendingModulePage() {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold mb-8">Lending Module</h1>
-        <p>This is a placeholder for the Lending module.</p>
-      </div>
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-bold">Lending Module</h1>
+        <p className="text-gray-500">Placeholder dashboard for the Lending capability.</p>
+      </header>
+      <Card>
+        <CardHeader>
+          <CardTitle>Welcome to Lending</CardTitle>
+          <CardDescription>This is a governed module governed by the application shell.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p>Once activated and integrated with backend launch systems, the application interface will render here.</p>
+          <div className="mt-4 flex gap-4">
+              <Button>Configure Settings</Button>
+              <Button variant="outline">View Documentation</Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default LendingPage;
+}

@@ -1,8 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Bell, User, Settings, HelpCircle, Activity, FileText } from "lucide-react";
 import Link from "next/link";
+import Hold from "@/components/feedback/Hold";
 
 const quickStats = [
   { title: "Active Applications", value: "3", icon: <Activity className="h-6 w-6 text-blue-500" /> },
@@ -33,6 +33,9 @@ export default function DashboardPage() {
             <p className="text-gray-500">Here's a snapshot of your account.</p>
         </div>
       </header>
+
+      {/* Demonstrating a "Hold" or alert state directly on the dashboard */}
+      <Hold message="Your payment for Inv-2023-002 has failed. Certain applications are restricted until updated." />
 
       {/* Quick Stats */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

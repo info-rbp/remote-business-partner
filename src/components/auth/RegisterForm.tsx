@@ -1,11 +1,17 @@
 'use client';
 
 import { useFormState, useFormStatus } from 'react-dom';
-import { registerUser } from '@/app/actions';
+import { registerUser, setSessionCookie } from '@/app/actions';
+import { useEffect, useState } from 'react';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { app } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
 
 const initialState = {
   message: null,
   errors: {},
+  clientActionRequired: false,
+  credentials: null
 };
 
 function SubmitButton() {
@@ -13,13 +19,36 @@ function SubmitButton() {
 
   return (
     <button type="submit" aria-disabled={pending} className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold">
-      Register
+      {pending ? 'Registering...' : 'Register'}
     </button>
   );
 }
 
 export function RegisterForm() {
   const [state, formAction] = useFormState(registerUser, initialState);
+  const [firebaseError, setFirebaseError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.clientActionRequired && state.credentials) {
+      const auth = getAuth(app);
+      createUserWithEmailAndPassword(auth, state.credentials.email, state.credentials.password)
+        .then(async (userCredential) => {
+          const user = userCredential.user;
+          const idToken = await user.getIdToken();
+          const sessionResult = await setSessionCookie(idToken);
+          if (sessionResult.success) {
+            router.push('/app/dashboard');
+          } else {
+            setFirebaseError(sessionResult.error || 'Failed to create session.');
+          }
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          setFirebaseError(errorMessage);
+        });
+    }
+  }, [state.clientActionRequired, state.credentials, router]);
 
   return (
     <form action={formAction}>
@@ -62,6 +91,7 @@ export function RegisterForm() {
           <p className="text-red-500 text-xs mt-1" key={error}>{error}</p>
         ))}
       </div>
+      {firebaseError && <p className="text-red-500 text-xs mt-1">{firebaseError}</p>}
       {state.errors?._form && state.errors._form.map((error: string) => (
         <p className="text-red-500 text-xs mt-1" key={error}>{error}</p>
       ))}

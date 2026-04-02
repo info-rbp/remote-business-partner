@@ -1,5 +1,5 @@
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import Empty from "@/components/feedback/Empty";
 
 export default function DocuSharePage() {
     return (
@@ -10,11 +10,12 @@ export default function DocuSharePage() {
             </header>
             <Card>
                 <CardHeader>
-                    <CardTitle>DocuShare</CardTitle>
-                    <CardDescription>A list of all the files and folders in your DocuShare.</CardDescription>
+                    <CardTitle>DocuShare Assets</CardTitle>
+                    <CardDescription>A list of all the files and folders published via DocuShare.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p>DocuShare management functionality will be implemented here.</p>
+                    {/* Visual implementation of an empty state in the Admin UI */}
+                    <Empty message="No DocuShare products or assets have been configured yet." />
                 </CardContent>
             </Card>
         </div>

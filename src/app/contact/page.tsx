@@ -1,11 +1,9 @@
-import PublicLayout from '../(public)/layout';
 
-export default function Contact() {
+export default function ContactPage() {
   return (
-    <PublicLayout>
-      <main className="container mx-auto p-4">
-        <h1 className="text-4xl font-bold">Contact</h1>
-      </main>
-    </PublicLayout>
+    <div className="container mx-auto p-8">
+      <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
+      <p>This is a placeholder for the Contact page.</p>
+    </div>
   );
 }

@@ -1,41 +1,95 @@
-import React from 'react';
 
-const MembershipPage = () => {
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, ArrowRight } from "lucide-react";
+import Link from "next/link";
+
+const currentPlan = {
+  name: "Premium Plan",
+  price: "$99.99/month",
+  renewalDate: "December 1, 2023",
+};
+
+const inclusions = [
+  "Access to Sales Hub",
+  "Access to Customer Support Desk",
+  "Advanced Insights Module",
+  "50 DocuShare Credits",
+  "Priority Email & Chat Support",
+  "Weekly Performance Reports"
+];
+
+export default function MembershipPage() {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold mb-8">My Membership</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Current Plan</h2>
-            <p className="text-lg">You are currently on the <span className="font-bold text-blue-500">Premium Plan</span>.</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Inclusions</h2>
-            <ul className="list-disc list-inside">
-              <li>Unlimited access to all applications</li>
-              <li>24/7 premium support</li>
-              <li>Advanced analytics</li>
-              <li>100GB storage</li>
-            </ul>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Entitlements</h2>
-            <p>Your entitlements include access to all features and services.</p>
-          </div>
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-bold">My Membership</h1>
+        <p className="text-gray-500">Manage your plan, review inclusions, and see billing details.</p>
+      </header>
+
+      <div className="grid gap-6 lg:grid-cols-5">
+        <div className="lg:col-span-3 space-y-6">
+            {/* Current Plan Details */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Current Plan</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <h2 className="text-xl font-semibold">{currentPlan.name}</h2>
+                    <p className="text-3xl font-bold my-2">{currentPlan.price}</p>
+                    <p className="text-sm text-gray-500">
+                        Your plan renews on {currentPlan.renewalDate}.
+                    </p>
+                </CardContent>
+            </Card>
+
+            {/* Inclusions */}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Plan Inclusions</CardTitle>
+                    <CardDescription>Features and services included in your current plan.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ul className="space-y-3">
+                        {inclusions.map((item, index) => (
+                            <li key={index} className="flex items-center">
+                                <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
+                                <span>{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </CardContent>
+            </Card>
         </div>
-        <div className="mt-8">
-          <h2 className="text-3xl font-bold mb-4">Lifecycle Visibility</h2>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <p>Your subscription is active and will renew on <span className="font-bold">December 31, 2024</span>.</p>
-            <button className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-              Manage Subscription
-            </button>
-          </div>
+        
+        <div className="lg:col-span-2">
+            {/* Actions Card */}
+             <Card className="bg-gray-50">
+                <CardHeader>
+                    <CardTitle>Manage Your Membership</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <p>Upgrade your plan to unlock more features and applications.</p>
+                    <Button className="w-full">
+                        Upgrade Plan <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    <p className="text-sm text-gray-500 pt-4">
+                       Need to make other changes?
+                    </p>
+                    <Link href="/portal/billing" passHref>
+                        <Button variant="outline" className="w-full">
+                            View Billing Details
+                        </Button>
+                    </Link>
+                     <Link href="/portal/support" passHref>
+                        <Button variant="outline" className="w-full">
+                            Contact Support
+                        </Button>
+                    </Link>
+                </CardContent>
+            </Card>
         </div>
       </div>
     </div>
   );
-};
-
-export default MembershipPage;
+}

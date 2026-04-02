@@ -1,66 +1,91 @@
+'use client'
 
-'use client';
-
+import { useFormState } from 'react-dom'
+import { loginUser, setSessionCookie } from '@/app/actions'
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Icons } from "@/components/icons";
-import Link from "next/link";
+import { useEffect, useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
+
+const initialState = {
+  message: null,
+  errors: {},
+}
 
 export default function SignInPage() {
+  const [state, formAction] = useFormState(loginUser, initialState)
+  const [loading, setLoading] = useState(false);
+  const [firebaseError, setFirebaseError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // If the server action validated the form successfully, we perform the client-side Firebase Auth login here.
+    if (state?.clientActionRequired && state?.credentials) {
+      const handleClientLogin = async () => {
+        setLoading(true);
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, state.credentials.email, state.credentials.password);
+            const idToken = await userCredential.user.getIdToken();
+            
+            // Send the token back to the server to create a secure session cookie
+            const sessionResponse = await setSessionCookie(idToken);
+            
+            if(sessionResponse.success) {
+                router.push('/portal/dashboard');
+                router.refresh();
+            } else {
+                setFirebaseError("Failed to create secure session.");
+            }
+        } catch (error: any) {
+            console.error("Firebase Login Error", error);
+            setFirebaseError(error.message || "Invalid email or password.");
+        } finally {
+            setLoading(false);
+        }
+      }
+      handleClientLogin();
+    }
+  }, [state, router]);
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="container mx-auto p-8 flex justify-center items-center">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Sign In</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+        <CardHeader>
+          <CardTitle>Sign In</CardTitle>
+          <CardDescription>Enter your credentials to sign in.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-6">
-                <Button variant="outline">
-                    <Icons.gitHub className="mr-2 h-4 w-4" />
-                    Github
-                </Button>
-                <Button variant="outline">
-                    <Icons.google className="mr-2 h-4 w-4" />
-                    Google
-                </Button>
-            </div>
-            <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-2 text-muted-foreground">
-                    Or continue with
-                    </span>
-                </div>
-            </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="john.doe@example.com" />
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
+        <CardContent>
+          <form action={formAction}>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" name="email" type="email" placeholder="Your email" />
+                 {state?.errors?.email && <p className="text-sm text-red-500">{state.errors.email[0]}</p>}
+              </div>
+              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
-                <Link href="/forgot-password
-" className="text-sm font-medium text-blue-600 hover:underline">
-                    Forgot Password?
-                </Link>
+                <Input id="password" name="password" type="password" placeholder="Your password" />
+                 {state?.errors?.password && <p className="text-sm text-red-500">{state.errors.password[0]}</p>}
+              </div>
+              
+              {firebaseError && (
+                  <div className="p-3 text-sm text-red-500 bg-red-50 border border-red-200 rounded-md">
+                      {firebaseError}
+                  </div>
+              )}
             </div>
-            <Input id="password" type="password" />
-          </div>
+            
+            <Button className="w-full mt-6" disabled={loading}>
+                {loading ? "Authenticating..." : "Sign In"}
+            </Button>
+            
+            {state?.message && <p className="text-sm text-green-500 mt-4 text-center">{state.message}</p>}
+          </form>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <Button className="w-full">Sign In</Button>
-          <p className="text-sm text-center text-gray-500">
-            Don't have an account?{" "}
-            <Link href="/register" className="font-medium text-blue-600 hover:underline">
-              Sign Up
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );
