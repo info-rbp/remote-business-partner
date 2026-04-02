@@ -1,0 +1,67 @@
+{
+    "name": "Payment Mirror Record",
+    "module": "RBP Platform Shell",
+    "doctype": "Payment Mirror Record",
+    "fields": [
+        {
+            "fieldname": "record_id",
+            "fieldtype": "Data",
+            "label": "Record ID",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "billing_account",
+            "fieldtype": "Link",
+            "label": "Billing Account",
+            "options": "Billing Account",
+            "reqd": 1
+        },
+        {
+            "fieldname": "provider_transaction_id",
+            "fieldtype": "Data",
+            "label": "Provider Transaction ID",
+            "reqd": 1
+        },
+        {
+            "fieldname": "amount",
+            "fieldtype": "Currency",
+            "label": "Amount",
+            "reqd": 1
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Data",
+            "label": "Status"
+        },
+        {
+            "fieldname": "timestamp",
+            "fieldtype": "Datetime",
+            "label": "Timestamp",
+            "reqd": 1
+        }
+    ],
+    "issingle": 0,
+    "istable": 0,
+    "track_changes": 1,
+    "allow_rename": 1,
+    "show_name_in_global_search": 1,
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "print": 1,
+            "email": 1,
+            "import": 0,
+            "if_owner": 0
+        }
+    ]
+}

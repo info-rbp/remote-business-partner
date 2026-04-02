@@ -1,0 +1,94 @@
+{
+    "name": "Launch Configuration",
+    "module": "RBP Platform Shell",
+    "doctype": "Launch Configuration",
+    "fields": [
+        {
+            "fieldname": "config_id",
+            "fieldtype": "Data",
+            "label": "Config ID",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "entitlement",
+            "fieldtype": "Link",
+            "label": "Entitlement",
+            "options": "Entitlement",
+            "reqd": 1
+        },
+        {
+            "fieldname": "launch_url",
+            "fieldtype": "URL",
+            "label": "Launch URL"
+        },
+        {
+            "fieldname": "sso_config",
+            "fieldtype": "Code",
+            "label": "SSO Configuration",
+            "options": "JSON"
+        },
+        {
+            "fieldname": "readiness_status",
+            "fieldtype": "Select",
+            "label": "Readiness Status",
+            "options": "ready\npending\nerror",
+            "default": "pending"
+        },
+        {
+            "fieldname": "launch_method",
+            "fieldtype": "Select",
+            "label": "Launch Method",
+            "options": "native\nembed\nsso\nredirect\nnone",
+            "reqd": 1,
+            "default": "native"
+        },
+        {
+            "fieldname": "allowed_surfaces",
+            "fieldtype": "Table MultiSelect",
+            "label": "Allowed Surfaces",
+            "options": "Navigation Rule"
+        },
+        {
+            "fieldname": "open_in_new_window",
+            "fieldtype": "Check",
+            "label": "Open in New Window",
+            "default": 0
+        },
+        {
+            "fieldname": "reason_codes",
+            "fieldtype": "Code",
+            "label": "Reason Codes",
+            "options": "JSON"
+        },
+        {
+            "fieldname": "remediation_actions",
+            "fieldtype": "Code",
+            "label": "Remediation Actions",
+            "options": "JSON"
+        }
+    ],
+    "issingle": 0,
+    "istable": 0,
+    "track_changes": 1,
+    "allow_rename": 1,
+    "show_name_in_global_search": 1,
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "print": 1,
+            "email": 1,
+            "import": 0,
+            "if_owner": 0
+        }
+    ]
+}

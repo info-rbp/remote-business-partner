@@ -1,59 +1,71 @@
-# Stage 3 Validation Gate
+# Stage 3 Validation Gate - Implementation Pass (FINAL)
 
-This document serves as the validation gate for Stage 3 of the platform's development. Its purpose is to verify that all required backend models and governance documents have been created. Each item must be marked as 'Complete' for the stage to be considered successfully implemented.
-
----
-
-### 1. Shell Domains
-
--   **Status**: `Complete`
--   **Justification**: The backend shell domains (Dashboard, Modules, Subscription, Settings), their ownership rules, and their relationship to frontend routes are fully defined.
--   **Evidence**: `backend/docs/platform_shell.md`
+This document serves as the **final implementation validation gate** for Stage 3 of the platform's development. It verifies that all required backend models and governance structures have been translated into **implementation-ready backend artifacts, helper logic, and Frappe DocType schemas**.
 
 ---
 
-### 2. Module Registry
-
--   **Status**: `Complete`
--   **Justification**: A backend-driven module registry has been defined. All existing frontend modules have been mapped into this registry, which now serves as the source of truth for module metadata.
--   **Evidence**: `backend/models/module_registry.md`
+### 1. Backend Scaffold
+- **Status**: `Complete`
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/` (Scaffold structure exists)
 
 ---
 
-### 3. Launch Model
-
--   **Status**: `Complete`
--   **Justification**: The Launch Configuration Engine has been defined, including launch methods, availability states, and a backend-owned readiness and execution model. This ensures no user-facing service launch can bypass backend control.
--   **Evidence**: `backend/models/launch_configuration.md`
-
----
-
-### 4. Entitlement Model
-
--   **Status**: `Complete`
--   **Justification**: The Entitlement Engine logic has been defined, including the evaluation flow for determining access based on subscription plans, account state, and overrides. The model is entirely backend-resolvable.
--   **Evidence**: `backend/models/entitlement_engine.md`
+### 2. Platform Record Artifacts
+- **Status**: `Complete`
+- **Justification**: All core platform records are now defined as actual Frappe DocType JSON schema files within the scaffold.
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/doctype/` (Contains JSONs for Platform Module, Subscription, Entitlement, etc.)
 
 ---
 
-### 5. Surface Routing Rules
+### 3. Module Registry
+- **Status**: `Complete`
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/registry/modules.py` and `registry_service.py`
 
--   **Status**: `Complete`
--   **Justification**: Backend-driven routing rules have been defined for all primary surfaces (`public`, `portal`, `admin`, `app`). The rules establish the backend as the primary authority for route enforcement.
--   **Evidence**: `backend/models/surface_routing_rules.md`
+---
+
+### 4. Launch Configuration Engine
+- **Status**: `Complete`
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/launch/configurations.py` and `launch_service.py`
+
+---
+
+### 5. Entitlement Engine
+- **Status**: `Complete`
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/entitlements/plans.py` and `entitlement_service.py`
 
 ---
 
 ### 6. Account State Model
-
--   **Status**: `Complete`
--   **Justification**: The Customer Account State Model has been defined, detailing all possible states (`onboarding`, `active`, `billing_hold`, etc.), their meanings, and the triggers for state transitions. This model is a critical input for the entitlement and launch engines.
--   **Evidence**: `backend/models/account_state_model.md`
+- **Status**: `Complete`
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/states/definitions.py` and `state_service.py`
 
 ---
 
-### 7. Integration Connection Model
+### 7. Surface Routing Enforcement
+- **Status**: `Complete`
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/routing/policy.py` and `routing_service.py`
 
--   **Status**: `Complete`
--   **Justification**: The Integration Connection Model has been defined. It clearly separates the concept of the informational `manifest` from the runtime `Integration Connection` record and details the fields required to manage a live integration, including its health and relationship to modules.
--   **Evidence**: `backend/models/integration_connection.md`
+---
+
+### 8. Integration Connection Model
+- **Status**: `Complete`
+- **Justification**: Integration connection models are now defined as Frappe DocType JSON schema files.
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/doctype/Integration_Connection/` and `External_Service_Reference/`
+
+---
+
+### 9. Admin Governance Scaffolding
+- **Status**: `Complete`
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/governance/config.py` and `governance_service.py`
+
+---
+
+### 10. Tests/Fixtures
+- **Status**: `Complete`
+- **Justification**: All core services have associated unit tests verifying their logic and adherence to the defined models.
+- **Evidence**: `backend/frappe_app/rbp_platform_shell/rbp_platform_shell/tests/`
+
+---
+
+## Stage 3 Completion Summary
+Stage 3 is now **FULLY COMPLETE**. All conceptual models have been translated into concrete backend implementation artifacts, including a Frappe app scaffold, structured data, functional helper services, comprehensive unit tests, and the necessary Frappe DocType JSON schemas. The platform shell's control plane is now implementation-ready for runtime adoption.

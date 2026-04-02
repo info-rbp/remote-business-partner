@@ -1,0 +1,64 @@
+{
+    "name": "Application Access Rule",
+    "module": "RBP Platform Shell",
+    "doctype": "Application Access Rule",
+    "fields": [
+        {
+            "fieldname": "rule_id",
+            "fieldtype": "Data",
+            "label": "Rule ID",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "module",
+            "fieldtype": "Link",
+            "label": "Module",
+            "options": "Platform Module",
+            "reqd": 1
+        },
+        {
+            "fieldname": "role",
+            "fieldtype": "Link",
+            "label": "Role",
+            "options": "Role",
+            "reqd": 1
+        },
+        {
+            "fieldname": "action",
+            "fieldtype": "Select",
+            "label": "Action",
+            "options": "create\nread\nupdate\ndelete",
+            "reqd": 1
+        },
+        {
+            "fieldname": "resource",
+            "fieldtype": "Data",
+            "label": "Resource",
+            "reqd": 1
+        }
+    ],
+    "issingle": 0,
+    "istable": 0,
+    "track_changes": 1,
+    "allow_rename": 1,
+    "show_name_in_global_search": 1,
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "print": 1,
+            "email": 1,
+            "import": 0,
+            "if_owner": 0
+        }
+    ]
+}

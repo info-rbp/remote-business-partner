@@ -1,0 +1,64 @@
+{
+    "name": "Platform Module",
+    "module": "RBP Platform Shell",
+    "doctype": "Platform Module",
+    "fields": [
+        {
+            "fieldname": "module_key",
+            "fieldtype": "Data",
+            "label": "Module Key",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "module_name",
+            "fieldtype": "Data",
+            "label": "Module Name",
+            "reqd": 1
+        },
+        {
+            "fieldname": "module_family",
+            "fieldtype": "Data",
+            "label": "Module Family"
+        },
+        {
+            "fieldname": "description",
+            "fieldtype": "Long Text",
+            "label": "Description"
+        },
+        {
+            "fieldname": "version",
+            "fieldtype": "Data",
+            "label": "Version"
+        },
+        {
+            "fieldname": "is_core_platform",
+            "fieldtype": "Check",
+            "label": "Is Core Platform",
+            "default": 0
+        }
+    ],
+    "issingle": 0,
+    "istable": 0,
+    "track_changes": 1,
+    "allow_rename": 1,
+    "show_name_in_global_search": 1,
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "print": 1,
+            "email": 1,
+            "import": 0,
+            "if_owner": 0
+        }
+    ]
+}

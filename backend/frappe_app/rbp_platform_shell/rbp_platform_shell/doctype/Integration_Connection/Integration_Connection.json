@@ -1,0 +1,94 @@
+{
+    "name": "Integration Connection",
+    "module": "RBP Platform Shell",
+    "doctype": "Integration Connection",
+    "fields": [
+        {
+            "fieldname": "connection_id",
+            "fieldtype": "Data",
+            "label": "Connection ID",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "customer",
+            "fieldtype": "Link",
+            "label": "Customer",
+            "options": "User",
+            "reqd": 1
+        },
+        {
+            "fieldname": "service",
+            "fieldtype": "Link",
+            "label": "Service",
+            "options": "External Service Reference",
+            "reqd": 1
+        },
+        {
+            "fieldname": "authentication_strategy",
+            "fieldtype": "Select",
+            "label": "Authentication Strategy",
+            "options": "oauth2\napi_key\njwt\ncustom",
+            "reqd": 1
+        },
+        {
+            "fieldname": "credentials",
+            "fieldtype": "Password",
+            "label": "Credentials"
+        },
+        {
+            "fieldname": "environment_configuration",
+            "fieldtype": "Code",
+            "label": "Environment Configuration",
+            "options": "JSON"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status",
+            "options": "enabled\ndisabled",
+            "reqd": 1,
+            "default": "enabled"
+        },
+        {
+            "fieldname": "health_check_endpoint",
+            "fieldtype": "URL",
+            "label": "Health Check Endpoint"
+        },
+        {
+            "fieldname": "last_health_check",
+            "fieldtype": "Datetime",
+            "label": "Last Health Check"
+        },
+        {
+            "fieldname": "health_status",
+            "fieldtype": "Select",
+            "label": "Health Status",
+            "options": "healthy\ndegraded\nunhealthy\nunknown",
+            "default": "unknown"
+        }
+    ],
+    "issingle": 0,
+    "istable": 0,
+    "track_changes": 1,
+    "allow_rename": 1,
+    "show_name_in_global_search": 1,
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "print": 1,
+            "email": 1,
+            "import": 0,
+            "if_owner": 0
+        }
+    ]
+}

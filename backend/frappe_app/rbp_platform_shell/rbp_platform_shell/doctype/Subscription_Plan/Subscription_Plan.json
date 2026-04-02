@@ -1,0 +1,62 @@
+{
+    "name": "Subscription Plan",
+    "module": "RBP Platform Shell",
+    "doctype": "Subscription Plan",
+    "fields": [
+        {
+            "fieldname": "plan_id",
+            "fieldtype": "Data",
+            "label": "Plan ID",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "plan_name",
+            "fieldtype": "Data",
+            "label": "Plan Name",
+            "reqd": 1
+        },
+        {
+            "fieldname": "price",
+            "fieldtype": "Currency",
+            "label": "Price",
+            "reqd": 1
+        },
+        {
+            "fieldname": "billing_cycle",
+            "fieldtype": "Select",
+            "label": "Billing Cycle",
+            "options": "monthly\nyearly",
+            "reqd": 1
+        },
+        {
+            "fieldname": "included_entitlements",
+            "fieldtype": "Table MultiSelect",
+            "label": "Included Entitlements",
+            "options": "Platform Module"
+        }
+    ],
+    "issingle": 0,
+    "istable": 0,
+    "track_changes": 1,
+    "allow_rename": 1,
+    "show_name_in_global_search": 1,
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "print": 1,
+            "email": 1,
+            "import": 0,
+            "if_owner": 0
+        }
+    ]
+}
