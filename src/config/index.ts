@@ -1,51 +1,38 @@
-import { envSchema } from './schema';
+import { serverSchema, clientSchema } from './schema';
 
-const validatedEnv = envSchema.safeParse(process.env);
-
-if (!validatedEnv.success) {
-    console.error(
-        '❌ Invalid environment variables:',
-        validatedEnv.error.flatten().fieldErrors
-    );
-    throw new Error('Invalid environment variables.');
+// A helper function to parse and format Zod errors for clarity.
+function formatErrors(errors: any) {
+  return Object.entries(errors)
+    .map(([key, value]) => `- ${key}: ${(value as any)._errors.join(', ')}`)
+    .join('\n');
 }
 
+// Validate server-side variables
+const serverResult = serverSchema.safeParse(process.env);
+if (!serverResult.success) {
+  console.error('\n❌ Invalid server-side environment variables:\n');
+  console.error(formatErrors(serverResult.error.format()));
+  process.exit(1);
+}
+
+// Validate client-side variables
+const clientResult = clientSchema.safeParse(process.env);
+if (!clientResult.success) {
+  console.error('\n❌ Invalid client-side environment variables:\n');
+  console.error(formatErrors(clientResult.error.format()));
+  process.exit(1);
+}
+
+/**
+ * The single, validated source of truth for all environment configuration.
+ * - `config.server` contains backend-only variables.
+ * - `config.client` contains frontend-safe variables.
+ */
 export const config = {
-    /**
-     * Server-side configuration.
-     * Do not expose this object to the client.
-     */
-    server: {
-        redisUrl: validatedEnv.data.PLATFORM_REDIS_URL,
-        databaseUrl: validatedEnv.data.PLATFORM_DATABASE_URL,
-        queueUrl: validatedEnv.data.PLATFORM_QUEUE_URL,
-        integrations: {
-            authentik: {
-                apiUrl: validatedEnv.data.INTEGRATION_AUTHENTIK_API_URL,
-                apiToken: validatedEnv.data.INTEGRATION_AUTHENTIK_API_TOKEN,
-            },
-            metabase: {
-                apiUrl: validatedEnv.data.INTEGRATION_METABASE_API_URL,
-                apiKey: validatedEnv.data.INTEGRATION_METABASE_API_KEY,
-            },
-            odoo: {
-                apiUrl: validatedEnv.data.INTEGRATION_ODOO_API_URL,
-                apiKey: validatedEnv.data.INTEGRATION_ODOO_API_KEY,
-            },
-            dolibarr: {
-                apiUrl: validatedEnv.data.INTEGRATION_DOLIBARR_API_URL,
-                apiKey: validatedEnv.data.INTEGRATION_DOLIBARR_API_KEY,
-            },
-        },
-    },
-    /**
-     * Public configuration, safe to expose to the client.
-     * This object is prefixed with NEXT_PUBLIC_.
-     */
-    public: {
-        appUrl: validatedEnv.data.NEXT_PUBLIC_PLATFORM_APP_URL,
-        features: {
-            newDashboard: validatedEnv.data.NEXT_PUBLIC_FEATURE_NEW_DASHBOARD_ENABLED,
-        },
-    },
+  server: serverResult.data,
+  client: clientResult.data,
 };
+
+// Type definitions for convenience
+export type ServerConfig = typeof config.server;
+export type ClientConfig = typeof config.client;

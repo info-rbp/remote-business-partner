@@ -1,52 +1,49 @@
-# Stage 4.7: Initial Data Flow Validation
+# End-to-End Data Flow Validation
 
-This document outlines the process and components for validating the platform's conceptual end-to-end data flow. Its purpose is to prove that the frontend architecture can support a full record lifecycle, from user authentication to analytics, even with a mocked backend.
+This document describes the mock data flow implemented to validate the system's architecture. It provides a deterministic, testable, and complete simulation of a record's lifecycle, from creation to its appearance in downstream analytics.
 
-## 1. Validation Objectives
+## The Flow
 
--   **Prove Architectural Soundness:** Demonstrate that the frontend is capable of handling a multi-step, stateful process.
--   **Establish Data Contracts:** Use typed mocks to define the expected shape of data at each stage of the flow.
--   **Create a Deterministic Test Path:** Provide a repeatable way to test the flow on demand.
+The validation is managed through a user interface located at `/admin/validation`.
 
-## 2. The Validation Flow
+### Success Criteria
 
-The flow is demonstrated on the `/admin/validation` page and consists of four distinct, sequential steps.
+The flow is considered successful only when a user can navigate to the validation page and click through all four steps, receiving a successful response at each stage.
 
-### Step 1: User Authentication
--   **Action:** The page checks for a mock authenticated user session.
--   **Mock:** A hardcoded user object with admin privileges.
--   **Success Criterion:** The page displays the mock user's email and role, confirming a session is active.
+### The Stages
 
-### Step 2: Platform Record Creation
--   **Action:** Clicking "Create Project Record" sends a request to a mock API endpoint (`/api/validation/record/create`).
--   **Mock:** The API simulates the creation of a 'Project' record in the Frappe backend. It returns a success response with a unique ID for the new record.
--   **Success Criterion:** The UI displays a success message with the new Project ID (e.g., `PROJ-001`).
+#### 1. Authentication Check
 
-### Step 3: Integration Sync Simulation
--   **Action:** Clicking "Check Sync Status" sends a request to a mock API endpoint (`/api/validation/sync/status/[id]`).
--   **Mock:** The API simulates checking the sync status of the record in an external service (e.g., Odoo). It returns a status of 'Synced'.
--   **Success Criterion:** The UI displays a success message indicating the record was synced (e.g., "Record PROJ-001 has been synced to Odoo.").
+*   **UI Action:** The user clicks the "Run" button for the "Authentication Check" step.
+*   **API Endpoint:** `GET /api/validation/auth/check`
+*   **Purpose:** Simulates checking if the system has valid credentials for integrated services (e.g., Odoo, Dolibarr, Metabase).
+*   **Mock Logic:** This endpoint returns a deterministic `AuthCheckResponse` indicating that all required API tokens and credentials are in place.
 
-### Step 4: Reporting Visibility
--   **Action:** Clicking "Verify in Analytics" sends a request to a mock API endpoint (`/api/validation/reporting/visibility/[id]`).
--   **Mock:** The API simulates a query to an analytics platform (e.g., Metabase), confirming the record is now visible in reports.
--   **Success Criterion:** The UI displays a success message confirming visibility (e.g., "Record PROJ-001 is now visible in Metabase reports.").
+#### 2. Record Creation
 
-## 3. What is Mocked vs. Real
+*   **UI Action:** The user clicks the "Run" button for the "Record Creation" step.
+*   **API Endpoint:** `POST /api/validation/record/create`
+*   **Purpose:** Simulates the creation of a new data record (e.g., a `ThirdParty` in Dolibarr or a `Partner` in Odoo) via the platform's service layer.
+*   **Mock Logic:** This endpoint generates a unique record ID and returns a `RecordCreationResponse`, confirming that the record was successfully "created."
 
--   **Real:**
-    -   The Next.js frontend components, UI, and state management.
-    -   The API routing infrastructure (`/api/...`).
-    -   The full request/response cycle between the browser and the Next.js server.
--   **Mocked:**
-    -   The user authentication check (no real login occurs).
-    -   All backend logic. The mock API endpoints return hardcoded, successful responses and do not interact with a database or any external services.
+#### 3. Sync Status Check
 
-## 4. Next Live Integration Requirements
+*   **UI Action:** The user clicks the "Run" button for the "Sync Status Check" step.
+*   **API Endpoint:** `GET /api/validation/sync/status/[id]`
+*   **Purpose:** Simulates querying an intermediate system or job queue (e.g., BullMQ) to check the status of the record's synchronization process to a data warehouse or central database.
+*   **Mock Logic:** This endpoint takes the `recordId` from the previous step and returns a `SyncStatusResponse`, deterministically stating that the record's sync is `complete`.
 
-To replace the mocks with a live implementation, the following backend components are required:
+#### 4. Reporting Visibility Check
 
-1.  **Live Authentication:** A working integration with Authentik that provides a real user session to the Next.js application.
-2.  **Frappe API:** A `POST` endpoint in the Frappe backend to create new 'Project' records.
-3.  **Sync Webhook/API:** An endpoint in the Frappe backend that can report the sync status of a record with external services.
-4.  **Analytics API:** An endpoint or database view that allows querying for the existence of records for reporting purposes.
+*   **UI Action:** The user clicks the "Run" button for the "Reporting Visibility Check" step.
+*   **API Endpoint:** `GET /api/validation/reporting/visibility/[id]`
+*   **Purpose:** Simulates the final and most critical step: confirming that the data, having been created and synced, is now visible and queryable in a downstream reporting tool like Metabase.
+*   **Mock Logic:** This endpoint takes the `recordId` and returns a `ReportingVisibilityResponse`, deterministically confirming that `isVisible` is `true`.
+
+## Implementation
+
+*   **Types:** All mock request and response objects are strongly typed in `src/lib/validation/types.ts`.
+*   **UI:** The validation page is implemented in `src/app/admin/validation/page.tsx`.
+*   **APIs:** Each validation stage has a corresponding API route in `src/app/api/validation/...`.
+
+This mock flow provides a robust foundation for building the real implementation, ensuring that the entire data path is considered and architected from the beginning.

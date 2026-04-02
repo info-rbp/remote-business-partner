@@ -1,33 +1,36 @@
-# Environment and Configuration Management
+# Configuration Management
 
-This directory contains the logic for managing application configuration and environment variables.
+This directory contains the logic for managing all environment-based configuration for the platform.
 
-## Architecture
+## Core Principles
 
-The configuration strategy is designed to be predictable, secure, and easy to manage across all environments (development, staging, production).
+1.  **Single Source of Truth:** The environment (`.env` file) is the only source of configuration values.
+2.  **Centralized Access:** All application code MUST access configuration through the unified `config` object exported from `src/config/index.ts`.
+3.  **Strict Validation:** The application will fail at startup if any required environment variables are missing or invalid. This is enforced by a `Zod` schema in `src/config/schema.ts`.
+4.  **Clear Separation:** Environment variables are strictly separated into two categories:
+    *   **Server-Side (`config.server`):** Secrets, API keys, and connection strings. These are **never** exposed to the browser.
+    *   **Client-Side (`config.client`):** Public URLs, feature flags, and other non-sensitive values. These MUST be prefixed with `NEXT_PUBLIC_` to be included in the browser bundle.
 
-1.  **Single Source of Truth**: The `.env.local` file (which is git-ignored) is the primary source for all environment-specific values. It is based on the `.env.example` template.
-2.  **Validation on Startup**: The `src/config/index.ts` module uses a Zod schema (`src/config/schema.ts`) to validate all environment variables when the application starts. If any required variable is missing or has an invalid type, the server will fail to start, preventing runtime errors.
-3.  **Frontend vs. Backend Split**: The schema explicitly separates server-side and client-side variables.
-    -   **Server-side**: Variables are only available in the Node.js environment.
-    -   **Client-side**: Variables intended for the browser **MUST** be prefixed with `NEXT_PUBLIC_`. The configuration loader exposes these through a `public` object, making it clear what is safe for frontend use.
-4.  **Centralized Access**: All parts of the application **MUST** access configuration through the module exported from `src/config/index.ts`. Do not use `process.env` directly outside of this module.
+## Usage
 
-## Environment Setup
+### Accessing Configuration
 
-1.  Copy the `.env.example` file to a new file named `.env.local` in the project root.
-2.  Fill in the required values in `.env.local` for your specific environment.
-3.  This file **MUST NOT** be committed to version control.
+```typescript
+import { config } from '@/config';
 
-## Secret Handling
+// In a server-side file (e.g., an API route or Server Component)
+const apiKey = config.server.INTEGRATION_AUTHENTIK_API_TOKEN;
 
--   **No Hardcoded Secrets**: Never commit secrets (API keys, passwords, private tokens) directly into the codebase.
--   **Use Environment Variables**: All secrets **MUST** be provided via environment variables.
--   **Restrict Exposure**: Only expose secrets to the parts of the application that strictly need them. For external integrations, this means secrets should only be accessible within the server-side integration clients (`src/lib/integrations/services`).
+// In a client-side file (e.g., a React component)
+const appUrl = config.client.NEXT_PUBLIC_APP_URL;
+```
 
-## Naming Convention
+### Adding a New Variable
 
--   `PLATFORM_*`: For core application settings.
--   `INTEGRATION_[SERVICE]_[KEY]`: For external service configurations.
--   `FEATURE_[NAME]_ENABLED`: For feature flags.
--   `NEXT_PUBLIC_*`: The required Next.js prefix for variables exposed to the browser.
+1.  **Add to `.env.example`:** Document the new variable with a clear description.
+2.  **Add to `src/config/schema.ts`:**
+    *   If it's a backend-only secret, add it to `serverSchema`.
+    *   If it needs to be available in the browser, prefix the name with `NEXT_PUBLIC_` and add it to `clientSchema`.
+3.  **Use it:** Import the `config` object and access your new variable via `config.server.YOUR_VAR` or `config.client.YOUR_VAR`.
+
+This system ensures that configuration is managed in a secure, consistent, and maintainable way.

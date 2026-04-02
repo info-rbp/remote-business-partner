@@ -1,34 +1,29 @@
+# Repository Manifest & Metadata
 
-# External Repository Integration
+This directory contains the tools and definitions for managing the platform's awareness of its component ecosystem.
 
-This directory contains the metadata for external repositories that are integrated with the Remote Business Partner platform.
+## 1. Core Philosophy
 
-## `repos.manifest.json`
+-   **Manifest for Awareness:** The `repos.manifest.json` file is a simple list of all repositories that are part of the platform ecosystem. It is used to give the platform *awareness* of its components.
+-   **Metadata for Governance:** The `repository-metadata.ts` file provides strongly-typed, deterministic metadata about each repository. This is the **governed source of truth** for how the platform understands and classifies each component.
+-   **Frappe as Runtime Truth:** Neither the manifest nor this metadata layer replaces the Frappe backend as the ultimate runtime system of record. This layer is for platform-level orchestration and visibility, not for business logic.
 
-This file contains a high-level manifest of external repositories. It is used for ecosystem awareness and not as a source of runtime truth.
+## 2. Metadata Ownership and Governance
 
-## `repository-metadata.ts`
+**Owner:** Platform Engineering Team
 
-This file contains the detailed metadata for each external repository. It implements the `ExternalRepository` interface defined in `src/lib/external/types.ts`.
+Adding or modifying a repository in the ecosystem is a governed process. It ensures that every component is explicitly classified and understood before it is integrated.
 
-### Integration Classifications
+### How to Add a New Repository
 
-- **`reference_only`**: The repository is used for informational purposes only. No code is integrated.
-- **`service_api`**: The repository a service that the application consumes via an API.
-- **`embedded_module`**: The repository contains a module that is embedded within the application.
-- **`sso_target`**: The repository represents an application that is a target for single sign-on.
-- **`runtime_adjacent`**: The repository is a critical part of the runtime, but not directly integrated into the codebase.
+1.  **Add to Manifest:** Add the canonical repository key (e.g., `new-repo-name`) to the `repos.manifest.json` file.
+2.  **Add to Metadata:** Create a new entry in `repository-metadata.ts` for the new repository. You must provide all the required fields as defined by the `ExternalRepository` type.
+    -   `canonicalKey`: Must match the key in the manifest.
+    -   `displayName`: A human-readable name.
+    -   `purpose`: A clear, concise description of the repository's role.
+    -   `integrationType`, `runtimeClassification`, `launchClassification`, `surfaceVisibility`: Select the appropriate classifications from the `src/lib/external/types.ts` enums.
+    -   `status`: Set the initial status (e.g., `active`, `beta`).
+3.  **Update Ecosystem Map:** Add the new repository to the appropriate section in `ecosystem-map.md`.
+4.  **Submit Pull Request:** Submit a pull request with these changes. The Platform Engineering team will review the classifications for consistency and architectural alignment before merging.
 
-### Launch Classifications
-
-- **`none`**: The repository is not directly launchable from the application.
-- **`native`**: The repository is a native part of the application.
-- **`embed`**: The repository is embedded within the application (e.g., in an iframe).
-- **`sso`**: The repository is accessed via single sign-on.
-- **`redirect`**: The application redirects the user to the external repository.
-
-### Runtime Classifications
-
-- **`runtime_critical`**: The application cannot function without this repository.
-- **`feature_dependent`**: A specific feature of the application depends on this repository.
-- **`non_critical`**: The application can function without this repository.
+**Self-service additions are not permitted.** This governance is in place to maintain architectural integrity and prevent classification drift.

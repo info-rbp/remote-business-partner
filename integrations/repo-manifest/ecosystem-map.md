@@ -1,13 +1,33 @@
+# Platform Ecosystem Map
 
-# Ecosystem Map and Dependency Mapping
+This document provides a visual map of the entire platform ecosystem, categorized by the `integrationType` defined in `repository-metadata.ts`.
 
-This document outlines how each external repository is intended to be used within the Remote Business Partner platform.
+## 1. Core Components
 
-| Repository | Integration Type      | Runtime Classification | Launch Classification | Description                                                                 |
-|------------|-----------------------|------------------------|-----------------------|-----------------------------------------------------------------------------|
-| Dolibarr   | `reference_only`      | `non_critical`         | `none`                | ERP/operations capability reference. Not currently integrated.              |
-| Metabase   | `embedded_module`     | `feature_dependent`    | `embed`               | Analytics and BI capability. To be embedded for reporting.                  |
-| RBP Core   | `runtime_adjacent`    | `runtime_critical`     | `native`              | Custom platform shell and control plane. A core part of the runtime.        |
-| Odoo       | `reference_only`      | `non_critical`         | `none`                | ERP/application capability reference. Not currently integrated.             |
-| Authentik  | `sso_target`          | `runtime_critical`     | `sso`                 | Identity and access management. Provides authentication for the platform. |
+These are the fundamental pillars of the platform, providing the primary user interface and the backend system of record.
 
+-   **Remote Business Partner (UI)** (`remote-business-partner`): The primary Next.js-based user interface for the platform.
+-   **Frappe Bench for Big Apps** (`frappe-bench-for-big-apps`): The core Frappe backend and ERPNext runtime.
+-   **ERPNext** (`erpnext`): The foundational ERP application providing core business logic.
+
+## 2. Deployment Utilities
+
+These repositories provide the tools and configurations necessary to deploy and manage the platform.
+
+-   **Frappe Docker** (`frappe_docker`): Official Docker images and orchestration for the Frappe environment.
+
+## 3. Connectors
+
+Connectors are responsible for data synchronization and bridging communication between the core platform and external services.
+
+-   **Odoo-Frappe Connector** (`odoo-frappe-connector`): Synchronizes data between Frappe/ERPNext and Odoo.
+-   **Authentik Integration** (`frappe-external-authentik`): Provides Authentik-based OpenID Connect authentication.
+-   **Metabase Frappe Driver** (`metabase-frappe-driver`): Enables Metabase to connect to the Frappe database.
+-   **BigQuery Connector** (`frappe-bigquery-connector`): Exports Frappe data to Google BigQuery.
+
+## 4. Adapters & Extensions
+
+These components enhance the functionality of the core Frappe platform, often by improving the user interface or adding specific features.
+
+-   **Gantt Chart (GoFlow)** (`erpnext_gantt_goflow`): An extension for advanced Gantt chart functionalities.
+-   **Better List View** (`frappe-better-list-view`): A UI extension that enhances Frappe's default list views.

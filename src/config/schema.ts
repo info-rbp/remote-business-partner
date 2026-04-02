@@ -1,28 +1,33 @@
 import { z } from 'zod';
 
-const serverSchema = z.object({
-    // Platform
-    PLATFORM_REDIS_URL: z.string().url(),
-    PLATFORM_DATABASE_URL: z.string().url(),
-    PLATFORM_QUEUE_URL: z.string().url(),
+/**
+ * Server-side environment variables schema.
+ * These are NOT exposed to the browser and are only available in the Node.js environment.
+ */
+export const serverSchema = z.object({
+  APP_SECRET: z.string().min(1, 'APP_SECRET is required'),
+  REDIS_URL: z.string().url('REDIS_URL must be a valid URL'),
+  QUEUE_REDIS_URL: z.string().url('QUEUE_REDIS_URL must be a valid URL'),
 
-    // Integrations
-    INTEGRATION_AUTHENTIK_API_URL: z.string().url(),
-    INTEGRATION_AUTHENTIK_API_TOKEN: z.string(),
-    INTEGRATION_METABASE_API_URL: z.string().url(),
-    INTEGRATION_METABASE_API_KEY: z.string(),
-    INTEGRATION_ODOO_API_URL: z.string().url(),
-    INTEGRATION_ODOO_API_KEY: z.string(),
-    INTEGRATION_DOLIBARR_API_URL: z.string().url(),
-    INTEGRATION_DOLIBARR_API_KEY: z.string(),
-});
-
-const clientSchema = z.object({
-    NEXT_PUBLIC_PLATFORM_APP_URL: z.string().url(),
-    NEXT_PUBLIC_FEATURE_NEW_DASHBOARD_ENABLED: z.string().transform(val => val === 'true'),
+  // Integrations - Backend Only
+  INTEGRATION_AUTHENTIK_BASE_URL: z.string().url(),
+  INTEGRATION_AUTHENTIK_API_TOKEN: z.string().min(1),
+  INTEGRATION_METABASE_BASE_URL: z.string().url(),
+  INTEGRATION_METABASE_USERNAME: z.string().min(1),
+  INTEGRATION_METABASE_PASSWORD: z.string().min(1),
+  INTEGRATION_ODOO_BASE_URL: z.string().url(),
+  INTEGRATION_ODOO_DB_NAME: z.string().min(1),
+  INTEGRATION_ODOO_USERNAME: z.string().min(1),
+  INTEGRATION_ODOO_PASSWORD: z.string().min(1),
+  INTEGRATION_DOLIBARR_BASE_URL: z.string().url(),
+  INTEGRATION_DOLIBARR_API_KEY: z.string().min(1),
 });
 
 /**
- * A merged schema for all environment variables.
+ * Client-side environment variables schema.
+ * These variables MUST be prefixed with NEXT_PUBLIC_ to be exposed to the browser.
  */
-export const envSchema = serverSchema.merge(clientSchema);
+export const clientSchema = z.object({
+  NEXT_PUBLIC_APP_URL: z.string().url('NEXT_PUBLIC_APP_URL must be a valid URL'),
+  NEXT_PUBLIC_FEATURE_FLAG_ENABLE_NEW_DASHBOARD: z.enum(['true', 'false']).default('false'),
+});

@@ -1,43 +1,48 @@
-name: Continuous Integration
+# Continuous Integration (CI) Workflow
+#
+# Validates the integrity of the codebase on every push and pull request.
+# This pipeline MUST succeed using only the contents of the repository.
+# It does not and should not require any external secrets.
+
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  build-and-validate:
+  validate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 20
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Dependencies
+        # Use npm ci for deterministic, faster, and safer installs in a CI environment.
+        run: npm ci
 
-      - name: Run linter
-        run: npm run lint
-
-      - name: Build application
-        run: |
-          # Create a dummy .env.local from the example file to satisfy the config loader during build.
-          # In a real deployment, these values would come from the CI/CD environment secrets.
-          cp .env.example .env.local
-          npm run build
-
-      - name: Check for configuration example
+      - name: Validate Configuration Prerequisites
+        # Fail fast if the environment template is missing.
         run: |
           if [ ! -f .env.example ]; then
-            echo "::error::.env.example file is missing."
+            echo ".env.example not found! The CI pipeline cannot proceed."
             exit 1
           fi
+          # Create the .env file for the build step.
+          cp .env.example .env
+
+      - name: Lint Code
+        run: npm run lint
+
+      - name: Build Project
+        # This step now succeeds because the previous step created a valid .env file.
+        run: npm run build
