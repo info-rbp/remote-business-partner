@@ -34,7 +34,7 @@ MODULE_REGISTRY = {
         "module_name": "Customer Relationship Management (CRM)",
         "module_family": "Customer Engagement",
         "description": "Core CRM functionality for managing customer data and interactions.",
-        "surfaces": ["app", "admin"],
+        "surfaces": ["app", "admin", "portal"],
         "visibility_rules": ["requires_active_subscription"],
         "launch_pattern": "internal_route",
         "entitlement_requirement": "entitlement_crm",

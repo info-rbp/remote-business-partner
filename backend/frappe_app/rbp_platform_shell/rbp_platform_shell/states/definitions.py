@@ -1,4 +1,5 @@
 # rbp_platform_shell/states/definitions.py
+from typing import Set
 from .types import AccountState, StateMetadata
 
 # This artifact is the single source of truth for account state definitions.

@@ -57,25 +57,24 @@ class RoutingService:
                 redirect_target="/",
                 reason="NO_DEFINED_POLICY",
             )
+        # 0. Handle authenticated users trying to access public auth pages
+        if is_authenticated and path in ["/login", "/register"]:
+            return RouteEvaluationResult(
+                is_allowed=False,
+                redirect_target="/app/dashboard", # Redirect to default dashboard
+                reason="ALREADY_AUTHENTICATED",
+            )
 
         # 1. Anonymous Access Check
         if not is_authenticated and not policy["allow_anonymous"]:
             return RouteEvaluationResult(
                 is_allowed=False,
-                redirect_target=policy["redirect_if_blocked"],
+                redirect_target="/login", # Always redirect to login for unauthenticated
                 reason="AUTHENTICATION_REQUIRED",
             )
         
         # 2. Role Check (if authenticated)
         if is_authenticated and user_role not in policy["allowed_roles"]:
-            # Special handling for authenticated users trying to access login/register
-            if path in ["/login", "/register"] and "public" in self._policies:
-                public_policy = self._policies["public"]
-                return RouteEvaluationResult(
-                    is_allowed=False,
-                    redirect_target="/app/dashboard", # Redirect to default dashboard
-                    reason="ALREADY_AUTHENTICATED",
-                )
             return RouteEvaluationResult(
                 is_allowed=False,
                 redirect_target=policy["redirect_if_blocked"],

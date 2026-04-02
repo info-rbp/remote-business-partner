@@ -1,1 +1,0 @@
-"""Service layer for rbp_platform_shell."""
