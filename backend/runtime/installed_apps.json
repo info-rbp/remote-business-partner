@@ -1,0 +1,10 @@
+[
+    {
+        "app_name": "frappe",
+        "version": "15.x.x-develop"
+    },
+    {
+        "app_name": "erpnext",
+        "version": "15.x.x-develop"
+    }
+]

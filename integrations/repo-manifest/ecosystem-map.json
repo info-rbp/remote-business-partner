@@ -1,0 +1,252 @@
+[
+  {
+    "key": "frappe",
+    "name": "Frappe",
+    "type": "available-in-bench",
+    "module_family": "Platform",
+    "user_surface": "Admin/API",
+    "launch_pattern": "API-Only",
+    "lifecycle_stage": "Active Integration",
+    "runtime_criticality": "Runtime-Critical"
+  },
+  {
+    "key": "rbp_core",
+    "name": "Core",
+    "type": "submodule-candidate",
+    "module_family": "Platform",
+    "user_surface": "Admin/API",
+    "launch_pattern": "API-Only",
+    "lifecycle_stage": "Planned Integration",
+    "runtime_criticality": "Close-Integration Candidate"
+  },
+  {
+    "key": "dolibarr",
+    "name": "Dolibarr",
+    "type": "reference",
+    "module_family": "Operations",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "metabase",
+    "name": "Metabase",
+    "type": "reference",
+    "module_family": "Analytics",
+    "user_surface": "Client/Admin",
+    "launch_pattern": "Embedded",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "odoo",
+    "name": "Odoo",
+    "type": "reference",
+    "module_family": "Operations",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "authentik",
+    "name": "Authentik",
+    "type": "reference",
+    "module_family": "Security",
+    "user_surface": "Admin/API",
+    "launch_pattern": "API-Only",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "n8n",
+    "name": "N8N",
+    "type": "reference",
+    "module_family": "Automation",
+    "user_surface": "Admin",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "appsmith",
+    "name": "Appsmith",
+    "type": "reference",
+    "module_family": "Tooling",
+    "user_surface": "Admin",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Internal Tool"
+  },
+  {
+    "key": "ballerine",
+    "name": "Ballerine",
+    "type": "reference",
+    "module_family": "Compliance",
+    "user_surface": "Client/Admin",
+    "launch_pattern": "Embedded",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "easy_appointments",
+    "name": "Easy Appointments",
+    "type": "reference",
+    "module_family": "Scheduling",
+    "user_surface": "Client",
+    "launch_pattern": "Embedded",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "openbb",
+    "name": "OpenBB",
+    "type": "reference",
+    "module_family": "Finance",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "marble",
+    "name": "Marble",
+    "type": "reference",
+    "module_family": "Risk",
+    "user_surface": "Admin/API",
+    "launch_pattern": "API-Only",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "hi_events",
+    "name": "Hi.Events",
+    "type": "reference",
+    "module_family": "Events",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "docspell",
+    "name": "Docspell",
+    "type": "reference",
+    "module_family": "Documents",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "fleetbase",
+    "name": "Fleetbase",
+    "type": "reference",
+    "module_family": "Logistics",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "financial_freedom",
+    "name": "Financial Freedom",
+    "type": "reference",
+    "module_family": "Finance",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "tirreno",
+    "name": "Tirreno",
+    "type": "reference",
+    "module_family": "Specialist",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "chaskiq",
+    "name": "Chaskiq",
+    "type": "reference",
+    "module_family": "Support",
+    "user_surface": "Client/Admin",
+    "launch_pattern": "Embedded",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "kyc_check",
+    "name": "KYC Check",
+    "type": "reference",
+    "module_family": "Compliance",
+    "user_surface": "Client",
+    "launch_pattern": "Embedded",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "nexus",
+    "name": "Nexus",
+    "type": "reference",
+    "module_family": "Tooling",
+    "user_surface": "Admin",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Internal Tool"
+  },
+  {
+    "key": "ghostfolio",
+    "name": "Ghostfolio",
+    "type": "reference",
+    "module_family": "Finance",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "apache_fineract",
+    "name": "Apache Fineract",
+    "type": "reference",
+    "module_family": "Finance",
+    "user_surface": "Client/API",
+    "launch_pattern": "API-Only",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "horilla",
+    "name": "Horilla",
+    "type": "reference",
+    "module_family": "People",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "postiz",
+    "name": "Postiz",
+    "type": "reference",
+    "module_family": "Communications",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  },
+  {
+    "key": "openproject",
+    "name": "Open Projects",
+    "type": "reference",
+    "module_family": "Operations",
+    "user_surface": "Client",
+    "launch_pattern": "New Tab",
+    "lifecycle_stage": "Reference",
+    "runtime_criticality": "Reference-Only"
+  }
+]

@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { checkRouteAccess } from './lib/route-guard';
 
+// TODO: STAGE 2/3 - This middleware is for frontend routing and display logic only.
+// It is NOT a substitute for backend authorization.
+// Every API route must be independently authorized by the backend.
 export function middleware(request: NextRequest) {
   // Centralize all access logic in the route guard
   const decision = checkRouteAccess(request);

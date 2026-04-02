@@ -33,12 +33,16 @@ remote-business-partner/
     └── repo-manifest/
         ├── repos.manifest.json
         └── README.md
+        ├── ecosystem-map.md
+        └── ecosystem-map.json
 ```
 
 Recommended convention:
 
 - `repos.manifest.json` = machine-readable source
 - `README.md` = human-readable usage guide
+- `ecosystem-map.md` = structured, human-readable map of the ecosystem
+- `ecosystem-map.json` = structured, machine-readable map of the ecosystem
 
 ## 3. Repository list covered by the manifest
 

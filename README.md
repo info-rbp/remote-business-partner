@@ -26,6 +26,15 @@ A key component of this architecture is the repository manifest, located at `int
 -   **Purpose**: The manifest serves as a catalogue of all external and ecosystem applications that the platform is aware of. It is used to dynamically populate the UI, distinguishing between native modules, external services, and applications pending integration.
 -   **Important Note**: The manifest is a descriptive tool, **not runtime truth**. It informs the frontend of what *can* exist, but the actual availability of any module for a given user is determined by the backend based on their entitlements and account state.
 
+## Backend Contract Boundary
+
+It is critical to understand the architectural boundary between the frontend and backend:
+
+*   **Firebase UI Consumes Backend State:** The frontend's primary role is to consume and display state provided by the backend. It should not create, modify, or determine business-critical state.
+*   **Frontend Role-Aware Logic is Display-Only Scaffolding:** The role-aware logic in the frontend (e.g., showing or hiding navigation links) is for display purposes only. It is a convenience for the user, not a security measure.
+*   **Middleware is Not Real Authorization:** The Next.js middleware is used for routing and basic session management. It is **not** a substitute for backend authorization. Every API request that accesses or modifies sensitive data must be authorized by the backend.
+*   **Launch Execution is Backend-Governed:** The frontend must not have the authority to execute or launch applications directly. All launch requests must be sent to the backend, which will then apply the necessary governance and permissions checks before initiating the launch.
+
 ## Local Development
 
 To get the application running locally, follow these steps:

@@ -11,12 +11,16 @@
 // USER TYPES & ROLES
 // =================================================================
 
+// TODO: STAGE 2/3 - This enum should be backend-driven.
+// The frontend should not be the source of truth for user types.
 export enum UserType {
   Public = 'public',
   Client = 'client',
   Admin = 'admin',
 }
 
+// TODO: STAGE 2/3 - This enum should be backend-driven.
+// The frontend should not be the source of truth for client roles.
 export enum ClientRole {
   AccountOwner = 'client_account_owner',
   BillingContact = 'client_billing_contact',
@@ -25,6 +29,8 @@ export enum ClientRole {
   ReadOnlyUser = 'client_read_only_user',
 }
 
+// TODO: STAGE 2/3 - This enum should be backend-driven.
+// The frontend should not be the source of truth for admin roles.
 export enum AdminRole {
   PlatformAdmin = 'admin_platform_admin',
   OperationsAdmin = 'admin_operations_admin',
@@ -52,6 +58,7 @@ export interface User {
 // MOCK USER DATA (STAGE 1 PLACEHOLDER)
 // =================================================================
 
+// TODO: STAGE 2/3 - This mock data should be removed and replaced with a call to the backend API.
 const mockUsers: { [key: string]: User } = {
   platformAdmin: {
     id: 'admin-001',
@@ -80,6 +87,7 @@ const mockUsers: { [key: string]: User } = {
  *
  * @returns The mock user object.
  */
+// TODO: STAGE 2/3 - This function should be removed and replaced with a call to the backend API.
 export const getMockUser = (role: keyof typeof mockUsers = 'platformAdmin'): User => {
   return mockUsers[role];
 };
@@ -91,6 +99,8 @@ export const getMockUser = (role: keyof typeof mockUsers = 'platformAdmin'): Use
  * @param requiredRoles An array of roles to check for.
  * @returns True if the user has at least one of the required roles, false otherwise.
  */
+// TODO: STAGE 2/3 - This function is a frontend-only convenience for display logic.
+// It is NOT a substitute for backend authorization.
 export const hasRole = (user: User, requiredRoles: UserRole[]): boolean => {
   if (!requiredRoles || requiredRoles.length === 0) {
     return true; // No roles required, so access is granted.
