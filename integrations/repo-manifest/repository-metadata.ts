@@ -1,0 +1,55 @@
+
+import type { ExternalRepository } from '@/lib/external/types';
+
+export const repositoryMetadata: ExternalRepository[] = [
+  {
+    key: 'dolibarr',
+    name: 'Dolibarr',
+    purpose: 'ERP/operations capability reference',
+    integrationType: 'reference_only',
+    runtimeClassification: 'non_critical',
+    launchClassification: 'none',
+    surfaceVisibility: 'hidden',
+    status: 'planned',
+  },
+  {
+    key: 'metabase',
+    name: 'Metabase',
+    purpose: 'Analytics and BI capability',
+    integrationType: 'embedded_module',
+    runtimeClassification: 'feature_dependent',
+    launchClassification: 'embed',
+    surfaceVisibility: 'visible',
+    status: 'planned',
+  },
+  {
+    key: 'rbp_core',
+    name: 'RBP Core',
+    purpose: 'Custom platform shell and control plane',
+    integrationType: 'runtime_adjacent',
+    runtimeClassification: 'runtime_critical',
+    launchClassification: 'native',
+    surfaceVisibility: 'hidden',
+    status: 'active',
+  },
+  {
+    key: 'odoo',
+    name: 'Odoo',
+    purpose: 'ERP/application capability reference',
+    integrationType: 'reference_only',
+    runtimeClassification: 'non_critical',
+    launchClassification: 'none',
+    surfaceVisibility: 'hidden',
+    status: 'planned',
+  },
+  {
+    key: 'authentik',
+    name: 'Authentik',
+    purpose: 'Identity and access management',
+    integrationType: 'sso_target',
+    runtimeClassification: 'runtime_critical',
+    launchClassification: 'sso',
+    surfaceVisibility: 'hidden',
+    status: 'active',
+  },
+];

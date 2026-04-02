@@ -1,0 +1,43 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Build application
+        run: |
+          # Create a dummy .env.local from the example file to satisfy the config loader during build.
+          # In a real deployment, these values would come from the CI/CD environment secrets.
+          cp .env.example .env.local
+          npm run build
+
+      - name: Check for configuration example
+        run: |
+          if [ ! -f .env.example ]; then
+            echo "::error::.env.example file is missing."
+            exit 1
+          fi

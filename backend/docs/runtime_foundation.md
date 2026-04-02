@@ -1,33 +1,27 @@
-# Backend Runtime Foundation
 
-This document records the authoritative backend runtime foundation for the Remote Business Partner project.
+# Runtime Foundation
 
-## Authoritative Bench Path
+This document defines the authoritative runtime environment for the Remote Business Partner platform.
 
-The authoritative backend runtime is located at:
+## Authoritative Runtime
 
-```
-rbp-bench/rbp-bench
-```
+- **Bench Path:** `rbp-bench/rbp-bench`
+- **Active Site:** `rbp.local`
 
-This is the inner bench, not the outer bench wrapper.
+All development, testing, and integration activities must target the inner bench at `rbp-bench/rbp-bench` and the `rbp.local` site.
 
-## Active Site
+The outer bench wrapper is a development dependency and MUST NOT be treated as the active runtime.
 
-The active site for this project is:
+## Configuration Drift
 
-```
-rbp.localhost
-```
+Configuration drift between the inner and outer benches has been identified as a key risk. The following configurations must be consistent with the authoritative runtime:
 
-## Expected Installed Apps Baseline
+- Redis
+- Workers
+- Realtime (Socket.io)
+- Background Jobs (RQ)
+- Site Configuration
 
-The expected baseline of installed Frappe apps is documented in `backend/runtime/installed_apps.json`.
+## Legacy Bench References
 
-## Runtime Ownership Boundary
-
-The backend runtime is a distinct environment from the frontend workspace. The Firebase Studio environment is for frontend development and hosting only. The backend runtime is managed separately.
-
-## **WARNING**
-
-Do not treat the outer bench wrapper or the Firebase Studio environment as the active backend runtime. All backend operations, including `bench` commands, must be executed within the authoritative bench path specified above.
+All references to the outer bench should be considered legacy and removed or updated to point to the authoritative inner bench. Any remaining references must be documented with a clear deprecation path.

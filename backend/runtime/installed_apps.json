@@ -1,3 +1,4 @@
+
 [
     {
         "app_name": "frappe",
@@ -6,5 +7,45 @@
     {
         "app_name": "erpnext",
         "version": "15.x.x-develop"
+    },
+    {
+        "app_name": "rbp_core",
+        "version": "0.0.1"
+    },
+    {
+        "app_name": "crm",
+        "version": "15.x.x-develop"
+    },
+    {
+        "app_name": "helpdesk",
+        "version": "0.0.1"
+    },
+    {
+        "app_name": "hrms",
+        "version": "15.x.x-develop"
+    },
+    {
+        "app_name": "lending",
+        "version": "0.0.1"
+    },
+    {
+        "app_name": "drive",
+        "version": "1.0.0"
+    },
+    {
+        "app_name": "wiki",
+        "version": "0.0.1"
+    },
+    {
+        "app_name": "builder",
+        "version": "0.0.1"
+    },
+    {
+        "app_name": "insights",
+        "version": "0.0.1"
+    },
+    {
+        "app_name": "lms",
+        "version": "0.0.1"
     }
 ]
