@@ -1,27 +1,22 @@
-import ModuleCard from '@/components/app/ModuleCard';
-import { mockLaunchData } from '@/lib/mock-launch-data';
-import { LaunchableObject } from '@/lib/types';
+import { PageHeader } from '@/components/page-header';
+import { mockLaunchData } from '@/services/mock-data/launch';
+import ModuleCard from '@/components/launch/ModuleCard';
 
-async function getLaunchData(): Promise<LaunchableObject[]> {
-    // In a real app, this would be an API call
-    return Promise.resolve(mockLaunchData);
-}
+export default function ModulesPage() {
+    // In a real app, this data would be fetched from the backend based on user entitlements
+    const modules = mockLaunchData.filter(obj => obj.object_type === 'platform_module');
 
-export default async function ModulesCataloguePage() {
-    const modules = await getLaunchData();
-
-    return (
-        <div className="space-y-6">
-            <header>
-                <h1 className="text-2xl font-bold">Platform Modules</h1>
-                <p className="text-gray-500">Explore, manage, and launch your connected capabilities.</p>
-            </header>
-
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {modules.map((module) => (
-                    <ModuleCard key={module.key} module={module} />
-                ))}
-            </div>
-        </div>
-    );
+  return (
+    <div className="flex flex-col gap-8">
+      <PageHeader
+        title="Modules"
+        description="Explore and manage your available modules."
+      />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {modules.map((module) => (
+          <ModuleCard key={module.key} module={module} />
+        ))}
+      </div>
+    </div>
+  );
 }

@@ -1,64 +1,48 @@
+'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export default function MembershipPage() {
+    const plans = [
+        { id: 1, name: 'Basic', price: '$10/month', features: ['Feature 1', 'Feature 2', 'Feature 3'] },
+        { id: 2, name: 'Pro', price: '$20/month', features: ['Feature 1', 'Feature 2', 'Feature 3', 'Feature 4'] },
+        { id: 3, name: 'Enterprise', price: '$50/month', features: ['All Features', 'Dedicated Support'] },
+    ];
+
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-4">Membership Plans</h1>
-      <p className="mb-8">Choose the plan that's right for you and unlock exclusive benefits.</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Plan</CardTitle>
-            <CardDescription>For individuals and small teams getting started.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">$10<span className="text-sm font-normal">/month</span></p>
-            <ul className="mt-4 space-y-2">
-              <li>Feature A</li>
-              <li>Feature B</li>
-              <li>Feature C</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button>Choose Plan</Button>
-          </CardFooter>
-        </Card>
-        <Card className="border-blue-500">
-          <CardHeader>
-            <CardTitle>Pro Plan</CardTitle>
-            <CardDescription>For growing businesses that need more power and flexibility.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">$50<span className="text-sm font-normal">/month</span></p>
-            <ul className="mt-4 space-y-2">
-              <li>All features in Basic</li>
-              <li>Feature D</li>
-              <li>Feature E</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button>Choose Plan</Button>
-          </CardFooter>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Enterprise Plan</CardTitle>
-            <CardDescription>For large organizations with custom needs.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">Contact Us</p>
-            <ul className="mt-4 space-y-2">
-              <li>All features in Pro</li>
-              <li>Dedicated Support</li>
-              <li>Custom Integrations</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button>Contact Sales</Button>
-          </CardFooter>
-        </Card>
+    <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-8">
+      <header className="text-center">
+        <h1 className="text-3xl font-bold">Membership Plans</h1>
+        <p className="text-muted-foreground">
+          Choose the plan that&apos;s right for you.
+        </p>
+      </header>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {plans.map((plan) => (
+            <Card key={plan.id}>
+                <CardHeader>
+                    <CardTitle>{plan.name}</CardTitle>
+                    <CardDescription>
+                        {plan.price}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ul className="list-disc list-inside">
+                        {plan.features.map((feature, index) => (
+                            <li key={index}>{feature}</li>
+                        ))}
+                    </ul>
+                    <Button className="mt-4">Choose Plan</Button>
+                </CardContent>
+            </Card>
+        ))}
       </div>
     </div>
   );

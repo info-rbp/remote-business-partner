@@ -1,5 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { mockLaunchData } from '@/lib/mock-launch-data';
+import { NextRequest } from 'next/server';
+import { apiResponse } from '@/lib/api';
+import { mockLaunchData } from '@/services/mock-data/launch';
+import { ApiResponse, LaunchReadiness } from '@/lib/types';
 
 export function GET(
   request: NextRequest,
@@ -11,8 +13,18 @@ export function GET(
   );
 
   if (launchObject) {
-    return NextResponse.json(launchObject);
+      const response: ApiResponse<LaunchReadiness> = {
+          success: true,
+          data: launchObject,
+          error: null,
+      }
+    return apiResponse(response.success, response.data, response.error, 200);
   } else {
-    return NextResponse.json({ error: 'Not Found' }, { status: 404 });
+    const response: ApiResponse<null> = {
+        success: false,
+        data: null,
+        error: { message: 'Not Found' },
+    }
+    return apiResponse(response.success, response.data, response.error, 404);
   }
 }

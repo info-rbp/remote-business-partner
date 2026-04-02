@@ -1,43 +1,71 @@
-# Project Blueprint
+# Blueprint: Remote Business Partner Platform
 
 ## Overview
 
-This document outlines the development plan for creating a comprehensive web application. The application will feature a public-facing website, a client portal, and an admin area, all built on a modern Next.js stack with Firebase integration.
+This document outlines the architecture and implementation plan for the Remote Business Partner platform. It follows a four-surface model: Public, Client Portal, Admin Portal, and Application Layer. This blueprint details the remaining tasks to complete Stage 1, ensuring alignment with all pre-defined contracts.
 
-## Implemented Features (Phases 1-3)
+## Implemented Features
 
-*   **Project Scaffolding**: Initialized a Next.js project with the App Router.
-*   **Public Pages & Forms**: Created placeholder pages and functional forms for public interaction (Contact, Lead Capture, Support, etc.), all connected to server actions.
-*   **Component Library**: Set up a basic component library using `shadcn/ui`.
-*   **Styling**: Configured Tailwind CSS for styling.
-*   **Authentication Flow**: Implemented a complete authentication system using Firebase, including registration, login, password reset, session management, and route protection via middleware.
-*   **Application Launchpad (Launch Model)**: Built a robust, backend-driven system for launching modules and services, complete with stateful UI cards, remediation handling, and mock API endpoints.
+*   **Route Skeleton**: A comprehensive route skeleton exists for all four surfaces (`/`, `/portal`, `/admin`, `/app`), including module-level routes.
+*   **Repository Manifest**: The repository ecosystem is defined in `integrations/repo-manifest/repos.manifest.json`.
+*   **Partial API/Launch Mocking**: Some mock data and API routes for application launch exist.
+*   **Authentication**: A basic Firebase-based authentication flow is in place.
+*   **UI Framework**: `shadcn/ui` and Tailwind CSS are configured.
 
-## Current Plan (Phase 4)
+## Stage 1 Implementation Checklist
 
-### 1. Implement Authenticated Support System
+### User/Journey Logic
 
-The goal is to create a support ticket system within the client portal, allowing authenticated users to view and manage their support requests.
+- [ ] **Public Surface**:
+    - [ ] Implement UI for all public pages as defined in the screen inventory.
+    - [ ] Ensure all forms (Contact, Lead Capture, Support) are fully functional with Server Actions.
+- [ ] **Client Portal**:
+    - [ ] Implement UI for all client portal pages.
+    - [ ] Create a fully functional, authenticated support ticket system.
+    - [ ] Implement profile management with a form to update user details.
+    - [ ] Add a placeholder page for team management.
+- [ ] **Admin Portal**:
+    - [ ] Implement UI for all admin portal pages, focusing on list/detail/edit/configuration patterns.
+    - [ ] Design for role-aware variations (e.g., Platform Admin, Content Admin).
+- [ ] **Application Layer**:
+    - [ ] Implement UI for the application layer, including the module catalog.
+    - [ ] Ensure module cards can display different states (available, restricted, etc.).
 
-*   **Mock Support Ticket Data**:
-    *   Create a new mock data file (`src/lib/mock-support-data.ts`) to simulate a collection of support tickets with different statuses (e.g., open, in_progress, resolved).
-*   **Support Ticket API**:
-    *   Create a new API route (`GET /api/support/tickets`) that returns the mock ticket data for the "logged-in" user.
-*   **Support Page UI**:
-    *   Develop the UI for the `/portal/support` page.
-    *   The page will fetch and display a list of the user's support tickets.
-    *   Create components to render the ticket list and individual ticket items, showing key information like ticket ID, status, and subject.
+### API/Response Model Implementation
 
-### 2. Implement Profile & Team Management
+- [ ] **Support Tickets API**:
+    - [ ] Create a `GET /api/support/tickets` endpoint that returns mock support ticket data.
+- [ ] **User Profile API**:
+    - [ ] Create a `POST /api/user/profile` endpoint to handle profile updates.
+- [ ] **Standardize API Responses**:
+    - [ ] Ensure all API responses follow a consistent format (e.g., `{ success: boolean, data: any, error: string | null }`).
 
-The objective is to build out the sections where users can manage their personal and team information.
+### Launch-Model Implementation
 
-*   **Profile Management**:
-    *   Create the UI for the `/portal/profile` page.
-    *   The page will display the user's information (e.g., name, email).
-    *   Implement a form, connected to a server action, that allows users to update their profile details.
-*   **Team Management (Placeholder)**:
-    *   Create a placeholder UI for the `/portal/team` page.
-    *   This page will indicate where team management features will be located in the future, but will not have full functionality in this phase.
+- [ ] **Application Launch API**:
+    - [ ] Enhance the existing `GET /api/launch/readiness` endpoint to be more robust.
+    - [ ] Create a `POST /api/launch/execute` endpoint to handle the "launch" action.
+- [ ] **Module Card States**:
+    - [ ] Connect the UI of the module cards in the application layer to the launch-model APIs to reflect the true state of each module.
 
-This plan addresses the final outstanding items from the initial project stage, ensuring the client portal has the core functionalities of support, profile, and team management.
+### Ecosystem-Awareness Implementation
+
+- [ ] **Repository Manifest Integration**:
+    - [ ] Create a service or utility to read and parse the `repos.manifest.json` file.
+    - [ ] Use the manifest data to dynamically populate the application and module catalogs, ensuring the UI reflects the defined ecosystem.
+
+### Reusable Architecture Cleanup
+
+- [ ] **Component Library**:
+    - [ ] Refactor and organize the `shadcn/ui` components for better reusability.
+    - [ ] Create shared components for standard UI patterns (e.g., page headers, data tables).
+- [ ] **State Management**:
+    - [ ] Implement a consistent state management strategy for handling UI states (loading, empty, error, success) across all pages.
+- [ ] **Error Handling**:
+    - [ ] Create a global error handling mechanism to catch and display errors gracefully.
+- [ ] **Linting and Code Quality**:
+    - [ ] Run `npm run lint -- --fix` to clean up the codebase.
+
+---
+
+I will now begin implementing the checklist, starting with the **User/Journey Logic** for the **Client Portal**.

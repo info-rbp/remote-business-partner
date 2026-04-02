@@ -1,23 +1,46 @@
+'use client';
+
+import { getMockUser } from '@/lib/auth';
+import { ROUTES } from '@/routes';
+import { RoleAwareLink } from './RoleAwareLink';
+import { Home, File, Users, Settings, BarChart, Shield, MessageSquare, DollarSign, Puzzle, Key, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 const PortalSidebar = () => {
+  const user = getMockUser('clientOwner'); // In a real app, you'd get the user from the session
+
+  const navLinks = [
+    { route: ROUTES.portal.dashboard, icon: <Home className="h-4 w-4" /> },
+    { route: ROUTES.portal.membership, icon: <Users className="h-4 w-4" /> },
+    { route: ROUTES.portal.billing, icon: <DollarSign className="h-4 w-4" /> },
+    { route: ROUTES.portal.docushare, icon: <FileText className="h-4 w-4" /> },
+    { route: ROUTES.portal.applications, icon: <Puzzle className="h-4 w-4" /> },
+    { route: ROUTES.portal.support, icon: <MessageSquare className="h-4 w-4" /> },
+    { route: ROUTES.portal.resources, icon: <File className="h-4 w-4" /> },
+    { route: ROUTES.portal.profile, icon: <Users className="h-4 w-4" /> },
+    { route: ROUTES.portal.team, icon: <Users className="h-4 w-4" /> },
+    { route: ROUTES.portal.security, icon: <Shield className="h-4 w-4" /> },
+  ];
+
   return (
-    <div className="bg-gray-800 text-white w-64 p-4">
-      <h2 className="text-2xl font-bold mb-4">Client Portal</h2>
-      <nav>
-        <ul>
-          <li><Link href="/portal/dashboard">Dashboard</Link></li>
-          <li><Link href="/portal/membership">My Membership</Link></li>
-          <li><Link href="/portal/billing">Billing</Link></li>
-          <li><Link href="/portal/docushare">DocuShare Access</Link></li>
-          <li><Link href="/portal/applications">Applications</Link></li>
-          <li><Link href="/portal/support">Support</Link></li>
-          <li><Link href="/portal/resources">Resources</Link></li>
-          <li><Link href="/portal/profile">Profile</Link></li>
-          <li><Link href="/portal/team">Team</Link></li>
-          <li><Link href="/portal/security">Security</Link></li>
-        </ul>
-      </nav>
+    <div className="hidden border-r bg-muted/40 md:block">
+        <div className="flex h-full max-h-screen flex-col gap-2">
+            <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                <Link href="/" className="flex items-center gap-2 font-semibold">
+                    <span className="">Client Portal</span>
+                </Link>
+            </div>
+            <div className="flex-1">
+                <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+                    {navLinks.map(({ route, icon }) => (
+                        <RoleAwareLink key={route.path} user={user} route={route}>
+                            {icon}
+                            {route.name}
+                        </RoleAwareLink>
+                    ))}
+                </nav>
+            </div>
+        </div>
     </div>
   );
 };

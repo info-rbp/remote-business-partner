@@ -1,23 +1,56 @@
-import ModuleCard from '@/components/app/ModuleCard';
-import { mockLaunchData } from '@/lib/mock-launch-data';
-import { LaunchableObject } from '@/lib/types';
+'use client';
 
-async function getLaunchData(): Promise<LaunchableObject[]> {
-    // In a real app, this would be an API call
-    return Promise.resolve(mockLaunchData.filter(item => item.object_type === 'platform_module'));
-}
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
-export default async function DashboardPage() {
-    const modules = await getLaunchData();
-
-    return (
-        <div className="container mx-auto p-8">
-            <h1 className="text-4xl font-bold mb-8">Application Dashboard</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {modules.map((module) => (
-                    <ModuleCard key={module.key} module={module} />
-                ))}
-            </div>
-        </div>
-    );
+export default function AppDashboardPage() {
+  return (
+    <div className="flex flex-col gap-8">
+      <header>
+        <h1 className="text-3xl font-bold">App Dashboard</h1>
+        <p className="text-muted-foreground">
+          Welcome to your app dashboard.
+        </p>
+      </header>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Active Modules</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">5</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Pending Updates</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">2</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Notifications</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">12</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Subscription</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">Pro Plan</p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
 }

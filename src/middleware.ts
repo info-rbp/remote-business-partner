@@ -1,33 +1,32 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { checkRouteAccess } from './lib/route-guard';
 
-export async function middleware(request: NextRequest) {
-  const session = request.cookies.get('session');
+export function middleware(request: NextRequest) {
+  // Centralize all access logic in the route guard
+  const decision = checkRouteAccess(request);
 
-  // Redirect to login if session cookie is not set and trying to access protected routes
-  if (!session) {
-    if (request.nextUrl.pathname.startsWith('/app') || request.nextUrl.pathname.startsWith('/portal') || request.nextUrl.pathname.startsWith('/admin')) {
-        return NextResponse.redirect(new URL('/sign-in', request.url));
-    }
+  if (decision.allow) {
     return NextResponse.next();
   }
 
-  // If the user is authenticated, redirect them from auth pages to the app dashboard
-  if (request.nextUrl.pathname.startsWith('/sign-in') || request.nextUrl.pathname.startsWith('/register')) {
-    return NextResponse.redirect(new URL('/app/dashboard', request.url));
+  if (decision.redirect) {
+    return NextResponse.redirect(decision.redirect);
   }
 
-  try {
-    // TODO: Add a server-side check to verify the session cookie with Firebase Admin SDK
-    // This would typically involve an API route or a server function that the middleware calls.
-    // For now, we will assume the cookie is valid if it exists.
-    return NextResponse.next();
-  } catch (error) {
-    // If verification fails, redirect to login
-    return NextResponse.redirect(new URL('/sign-in', request.url));
-  }
+  // As a fallback, redirect to the home page if access is denied but no redirect is specified
+  return NextResponse.redirect(new URL('/', request.url));
 }
 
 export const config = {
-    matcher: ['/app/:path*', '/portal/:path*', '/admin/:path*', '/sign-in', '/register'],
-}
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - api/ (API routes, which have their own auth)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|api/).*)',
+  ],
+};

@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Download } from "lucide-react";
+import { StateNotice } from "@/components/feedback/StateNotice";
+import { AccountState } from "@/lib/state";
+import { ROUTES } from "@/routes";
 
 const subscriptions = [
     { name: "Premium Plan", status: "Active", price: "$99.99/month", nextBilling: "December 1, 2023" }
@@ -19,12 +22,21 @@ const invoices = [
 ];
 
 export default function BillingPage() {
+    const accountState = AccountState.BillingHold; // Mock state for demonstration
+
   return (
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-bold">Billing</h1>
         <p className="text-gray-500">Manage your subscriptions, view purchase history, and access your invoices.</p>
       </header>
+
+        {/* Account State Notice */}
+        <StateNotice 
+            state={accountState} 
+            remediationLink={ROUTES.portal.billing.path} 
+            remediationText="Update payment method" 
+        />
 
       {/* Subscriptions */}
       <Card>

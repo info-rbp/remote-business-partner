@@ -1,15 +1,30 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { apiResponse } from '@/lib/api';
+import { z } from 'zod';
+import { LaunchExecution } from '@/lib/types';
+
+const schema = z.object({
+  type: z.string(),
+  key: z.string(),
+});
 
 export async function POST(request: NextRequest) {
-  const { method, route, target_url } = await request.json();
+    const body = await request.json();
+    const validatedFields = schema.safeParse(body);
 
-  // In a real application, you would generate a secure URL here for SSO
-  // or perform other security checks.
-  const execution = {
-    method,
-    target_url: method === 'sso' ? `https://secure-launch.example.com?token=...` : target_url,
-    route,
-  };
+    if (!validatedFields.success) {
+        return apiResponse(false, null, { message: 'Invalid request body' }, 400);
+    }
 
-  return NextResponse.json({ execution });
+    // TODO: Replace this with real backend integration.
+    // The backend would handle the actual launch logic (e.g., creating a session,
+    // provisioning resources, etc.) and return the appropriate response.
+    console.log('Executing launch:', validatedFields.data);
+
+    const mockLaunchExecution: LaunchExecution = {
+        success: true,
+        message: 'Launch successful!',
+    };
+
+    return apiResponse(true, mockLaunchExecution, null, 200);
 }

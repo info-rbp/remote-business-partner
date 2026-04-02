@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { ROUTES } from '@/routes';
 
 interface Offer {
   id: number;
@@ -10,11 +12,11 @@ interface Offer {
 const OfferCard = ({ offer }: { offer: Offer }) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <img src={offer.imageUrl} alt={offer.title} className="w-full h-48 object-cover" />
+      <Image src={offer.imageUrl} alt={offer.title} className="w-full h-48 object-cover" width={500} height={300} />
       <div className="p-4">
         <h3 className="text-xl font-bold mb-2">{offer.title}</h3>
         <p className="text-gray-700 mb-4">{offer.description}</p>
-        <Link href={`/offers/${offer.id}`} className="text-blue-600 font-bold">Learn More</Link>
+        <Link href={`${ROUTES.public.offers.path}/${offer.id}`} className="text-blue-600 font-bold">Learn More</Link>
       </div>
     </div>
   );

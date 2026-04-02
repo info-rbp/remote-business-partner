@@ -1,39 +1,43 @@
+'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export default function ResourcesPage() {
+    const resources = [
+        { id: 1, title: 'Blog Post', description: 'Read our latest blog post on industry trends.' },
+        { id: 2, title: 'Case Study', description: 'See how our platform helped a client succeed.' },
+        { id: 3, title: 'Webinar', description: 'Watch our webinar on remote work best practices.' },
+    ];
+
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-4">Resources</h1>
-      <p className="mb-8">Explore our library of helpful guides, articles, and tutorials.</p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Getting Started Guide</CardTitle>
-            <CardDescription>A comprehensive guide to help you get started with our platform.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Learn the basics and set up your account in minutes.</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>API Documentation</CardTitle>
-            <CardDescription>Detailed documentation for our powerful API.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Integrate our services with your own applications.</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Blog</CardTitle>
-            <CardDescription>Stay up-to-date with the latest news, updates, and industry insights.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>Read our latest articles and learn from our experts.</p>
-          </CardContent>
-        </Card>
+    <div className="flex flex-col gap-8 p-4 sm:p-6 lg:p-8">
+      <header className="text-center">
+        <h1 className="text-3xl font-bold">Resources</h1>
+        <p className="text-muted-foreground">
+          Explore our collection of helpful resources.
+        </p>
+      </header>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {resources.map((resource) => (
+            <Card key={resource.id}>
+                <CardHeader>
+                    <CardTitle>{resource.title}</CardTitle>
+                    <CardDescription>
+                        {resource.description}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Button>Read More</Button>
+                </CardContent>
+            </Card>
+        ))}
       </div>
     </div>
   );

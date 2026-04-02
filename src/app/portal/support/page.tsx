@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { SupportTicket } from '@/lib/mock-support-data';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -15,55 +15,71 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-
-const getBadgeVariant = (status: 'open' | 'in_progress' | 'resolved') => {
-    switch (status) {
-        case 'open':
-            return 'secondary';
-        case 'in_progress':
-            return 'default';
-        case 'resolved':
-            return 'outline';
-    }
-};
+} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/page-header';
+import { SupportTicket, ApiResponse } from '@/lib/types';
 
 export default function SupportPage() {
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchTickets = async () => {
+    async function fetchTickets() {
       try {
         const response = await fetch('/api/support/tickets');
-        if (!response.ok) {
-          throw new Error('Failed to fetch support tickets');
+        const result: ApiResponse<SupportTicket[]> = await response.json();
+        
+        if (result.success && result.data) {
+          setTickets(result.data);
+        } else {
+            throw new Error(result.error?.message || 'Failed to fetch support tickets.');
         }
-        const data = await response.json();
-        setTickets(data);
-      } catch (err: any) {
-        setError(err.message);
+
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred.');
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
-    };
+    }
 
     fetchTickets();
   }, []);
 
+  const getStatusVariant = (status: SupportTicket['status']) => {
+    switch (status) {
+      case 'open':
+        return 'destructive';
+      case 'in_progress':
+        return 'secondary';
+      case 'resolved':
+        return 'default';
+      default:
+        return 'outline';
+    }
+  };
+
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-8">Support Tickets</h1>
+    <div className="flex flex-col gap-8">
+      <PageHeader
+        title="Support Tickets"
+        description="View and manage your support tickets here."
+      />
       <Card>
         <CardHeader>
-          <CardTitle>Your Support Requests</CardTitle>
+          <CardTitle>My Tickets</CardTitle>
+          <CardDescription>
+            A list of your recent support tickets.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading && <p>Loading tickets...</p>}
-          {error && <p className="text-red-500">{error}</p>}
-          {!isLoading && !error && (
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -71,17 +87,27 @@ export default function SupportPage() {
                   <TableHead>Subject</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Last Updated</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {tickets.map((ticket) => (
                   <TableRow key={ticket.id}>
-                    <TableCell>{ticket.id}</TableCell>
+                    <TableCell className="font-medium">{ticket.id}</TableCell>
                     <TableCell>{ticket.subject}</TableCell>
                     <TableCell>
-                        <Badge variant={getBadgeVariant(ticket.status)}>{ticket.status.replace(/_/g, ' ')}</Badge>
+                      <Badge variant={getStatusVariant(ticket.status)}>
+                        {ticket.status}
+                      </Badge>
                     </TableCell>
-                    <TableCell>{new Date(ticket.lastUpdated).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      {new Date(ticket.lastUpdated).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="outline" size="sm">
+                        View
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

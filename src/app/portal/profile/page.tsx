@@ -1,67 +1,53 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useEffect } from 'react';
+import { useFormState } from 'react-dom';
+import { saveProfile } from '@/app/actions';
+import { PageHeader } from '@/components/page-header';
 
 const initialState = {
-  message: null,
-  errors: null,
+  message: '',
 };
 
-async function updateProfile(prevState: any, formData: FormData) {
-    'use server';
-    console.log('Profile updated:', {
-        name: formData.get('name'),
-        email: formData.get('email'),
-    });
-    return { message: 'Profile updated successfully!' };
-}
-
-function SubmitButton() {
-    const { pending } = useFormStatus();
-  
-    return (
-      <Button type="submit" disabled={pending}>
-        {pending ? 'Saving...' : 'Save Changes'}
-      </Button>
-    );
-}
-
 export default function ProfilePage() {
-    const [state, formAction] = useFormState(updateProfile, initialState);
-
-    useEffect(() => {
-        if (state.message) {
-          alert(state.message);
-        }
-      }, [state.message]);
+    const [state, formAction] = useFormState(saveProfile, initialState);
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-8">Your Profile</h1>
+    <div className="flex flex-col gap-8">
+      <PageHeader
+        title="My Profile"
+        description="View and manage your personal information."
+      />
       <Card>
         <CardHeader>
-          <CardTitle>Edit your profile information</CardTitle>
+          <CardTitle>Profile Details</CardTitle>
+          <CardDescription>
+            Update your name and email address.
+          </CardDescription>
         </CardHeader>
-        <form action={formAction}>
-            <CardContent className="space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" name="name" defaultValue="John Doe" />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" defaultValue="john.doe@example.com" />
-                </div>
-            </CardContent>
-            <CardFooter>
-                <SubmitButton />
-            </CardFooter>
-        </form>
+        <CardContent>
+          <form action={formAction} className="space-y-4">
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="name">Name</Label>
+              <Input type="text" id="name" name="name" defaultValue="John Doe" />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="email">Email</Label>
+              <Input type="email" id="email" name="email" defaultValue="john.doe@example.com" />
+            </div>
+            <Button type="submit">Save Changes</Button>
+            {state?.message && <p className="text-green-500">{state.message}</p>}
+          </form>
+        </CardContent>
       </Card>
     </div>
   );

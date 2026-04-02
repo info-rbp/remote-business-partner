@@ -1,17 +1,40 @@
+'use client';
+
+import { getMockUser } from '@/lib/auth';
+import { ROUTES } from '@/routes';
+import { RoleAwareLink } from './RoleAwareLink';
+import { Home, Settings, Puzzle, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 
 const AppSidebar = () => {
+  const user = getMockUser('clientOwner'); // In a real app, you'd get the user from the session
+
+  const navLinks = [
+    { route: ROUTES.app.dashboard, icon: <Home className="h-4 w-4" /> },
+    { route: ROUTES.app.modules.index, icon: <Puzzle className="h-4 w-4" /> },
+    { route: ROUTES.app.subscription, icon: <ShoppingCart className="h-4 w-4" /> },
+    { route: ROUTES.app.settings, icon: <Settings className="h-4 w-4" /> },
+  ];
+
   return (
-    <div className="bg-gray-700 text-white w-64 p-4">
-      <h2 className="text-2xl font-bold mb-4">Application Layer</h2>
-      <nav>
-        <ul>
-          <li><Link href="/app/dashboard">Dashboard</Link></li>
-          <li><Link href="/app/modules">Modules</Link></li>
-          <li><Link href="/app/subscription">Subscription</Link></li>
-          <li><Link href="/app/settings">Settings</Link></li>
-        </ul>
-      </nav>
+    <div className="hidden border-r bg-muted/40 md:block">
+        <div className="flex h-full max-h-screen flex-col gap-2">
+            <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+                <Link href="/" className="flex items-center gap-2 font-semibold">
+                    <span className="">Application</span>
+                </Link>
+            </div>
+            <div className="flex-1">
+                <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+                    {navLinks.map(({ route, icon }) => (
+                        <RoleAwareLink key={route.path} user={user} route={route}>
+                            {icon}
+                            {route.name}
+                        </RoleAwareLink>
+                    ))}
+                </nav>
+            </div>
+        </div>
     </div>
   );
 };

@@ -1,42 +1,62 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+'use client';
 
-const permissions = [
-  { role: "Platform Administrator", accessLevel: "Full System", status: "Active" },
-  { role: "Content Administrator", accessLevel: "Website Content & Assets", status: "Active" },
-  { role: "Commerce Administrator", accessLevel: "Billing & Offers", status: "Active" },
-  { role: "Support Administrator", accessLevel: "Tickets & Customer State", status: "Active" }
-];
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 
 export default function PermissionsPage() {
+    const roles = [
+        { id: 1, name: 'Admin', description: 'Full access to all features' },
+        { id: 2, name: 'Editor', description: 'Can edit content' },
+        { id: 3, name: 'Viewer', description: 'Can view content' },
+    ];
+
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-8">
       <header>
-        <h1 className="text-2xl font-bold">Roles & Permissions</h1>
-        <p className="text-gray-500">Manage internal admin roles and capability bands.</p>
+        <h1 className="text-3xl font-bold">Permissions Management</h1>
+        <p className="text-muted-foreground">
+          Manage user roles and permissions here.
+        </p>
       </header>
       <Card>
         <CardHeader>
-          <CardTitle>Configured Roles</CardTitle>
-          <CardDescription>Roles control what actions administrators can take within the system.</CardDescription>
+          <CardTitle>Roles</CardTitle>
+          <CardDescription>
+            A list of all the roles.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Role Group</TableHead>
-                <TableHead>Access Level / Band</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {permissions.map(p => (
-                <TableRow key={p.role}>
-                  <TableCell className="font-medium">{p.role}</TableCell>
-                  <TableCell>{p.accessLevel}</TableCell>
+              {roles.map((role) => (
+                <TableRow key={role.id}>
+                  <TableCell className="font-medium">{role.name}</TableCell>
+                  <TableCell>{role.description}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{p.status}</Badge>
+                    <Button variant="outline" size="sm">
+                        Edit
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

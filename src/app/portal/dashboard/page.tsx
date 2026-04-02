@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bell, User, Settings, HelpCircle, Activity, FileText } from "lucide-react";
+import { Activity, FileText, User } from "lucide-react";
 import Link from "next/link";
-import Hold from "@/components/feedback/Hold";
+import { ROUTES } from "@/routes";
+import { StateNotice } from "@/components/feedback/StateNotice";
+import { AccountState } from "@/lib/state";
 
 const quickStats = [
   { title: "Active Applications", value: "3", icon: <Activity className="h-6 w-6 text-blue-500" /> },
@@ -17,25 +19,31 @@ const recentActivities = [
 ];
 
 const quickLinks = [
-    { label: "Manage Subscription", href: "/portal/membership" },
-    { label: "View Invoices", href: "/portal/billing" },
-    { label: "Update Profile", href: "/portal/profile" },
-    { label: "Invite Team Member", href: "/portal/team" },
+    { label: ROUTES.portal.membership.name, href: ROUTES.portal.membership.path },
+    { label: ROUTES.portal.billing.name, href: ROUTES.portal.billing.path },
+    { label: ROUTES.portal.profile.name, href: ROUTES.portal.profile.path },
+    { label: ROUTES.portal.team.name, href: ROUTES.portal.team.path },
 ]
 
 export default function DashboardPage() {
+  const accountState = AccountState.BillingHold; // Mock state for demonstration
+
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
       <header className="flex items-center justify-between">
         <div>
             <h1 className="text-2xl font-bold">Welcome back, Alex!</h1>
-            <p className="text-gray-500">Here's a snapshot of your account.</p>
+            <p className="text-gray-500">Here&apos;s a snapshot of your account.</p>
         </div>
       </header>
 
-      {/* Demonstrating a "Hold" or alert state directly on the dashboard */}
-      <Hold message="Your payment for Inv-2023-002 has failed. Certain applications are restricted until updated." />
+      {/* Account State Notice */}
+      <StateNotice 
+        state={accountState} 
+        remediationLink={ROUTES.portal.billing.path} 
+        remediationText="Update payment method" 
+      />
 
       {/* Quick Stats */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

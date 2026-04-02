@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ROUTES } from "@/routes";
 
 export default function NotFound() {
   return (
@@ -8,8 +9,8 @@ export default function NotFound() {
       <div className="max-w-md text-center">
         <h1 className="text-9xl font-extrabold text-gray-800">404</h1>
         <h2 className="mt-4 text-2xl font-bold text-gray-600">Oops! Page not found.</h2>
-        <p className="mt-2 text-gray-500">We can't seem to find the page you're looking for.</p>
-        <Link href="/">
+        <p className="mt-2 text-gray-500">We can&apos;t seem to find the page you&apos;re looking for.</p>
+        <Link href={ROUTES.public.home.path}>
           <Button className="mt-6">Go back home</Button>
         </Link>
       </div>

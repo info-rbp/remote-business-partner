@@ -18,7 +18,7 @@ export default function SecurityPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Change Password</CardTitle>
-                    <CardDescription>It's a good idea to use a strong password that you're not using elsewhere.</CardDescription>
+                    <CardDescription>It&apos;s a good idea to use a strong password that you&apos;re not using elsewhere.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <Input type="password" placeholder="Current Password" />

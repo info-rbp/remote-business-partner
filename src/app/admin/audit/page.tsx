@@ -1,41 +1,58 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+'use client';
 
-const auditLogs = [
-  { action: "Plan Updated", entity: "Premium Membership", user: "system.admin@example.com", timestamp: "10 mins ago" },
-  { action: "Refund Processed", entity: "Inv-2023-011", user: "finance.admin@example.com", timestamp: "1 hour ago" },
-  { action: "App Configuration Changed", entity: "Sales Hub", user: "platform.ops@example.com", timestamp: "3 hours ago" },
-];
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
 
 export default function AuditPage() {
+    const logs = [
+        { id: 1, user: 'John Doe', action: 'Updated user profile', timestamp: '2024-07-30T10:00:00Z' },
+        { id: 2, user: 'Jane Smith', action: 'Created a new support ticket', timestamp: '2024-07-29T14:30:00Z' },
+        { id: 3, user: 'Peter Jones', action: 'Resolved a support ticket', timestamp: '2024-07-28T12:00:00Z' },
+    ];
+
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-8">
       <header>
-        <h1 className="text-2xl font-bold">Audit Trails</h1>
-        <p className="text-gray-500">View logs of significant administrative actions across the platform.</p>
+        <h1 className="text-3xl font-bold">Audit Trail</h1>
+        <p className="text-muted-foreground">
+          View the audit trail here.
+        </p>
       </header>
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity Logs</CardTitle>
-          <CardDescription>A chronological record of sensitive operations and configuration changes.</CardDescription>
+          <CardTitle>Logs</CardTitle>
+          <CardDescription>
+            A list of all the audit logs.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Action</TableHead>
-                <TableHead>Entity/Target</TableHead>
                 <TableHead>User</TableHead>
+                <TableHead>Action</TableHead>
                 <TableHead>Timestamp</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {auditLogs.map((log, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{log.action}</TableCell>
-                  <TableCell>{log.entity}</TableCell>
-                  <TableCell>{log.user}</TableCell>
-                  <TableCell className="text-gray-500">{log.timestamp}</TableCell>
+              {logs.map((log) => (
+                <TableRow key={log.id}>
+                  <TableCell className="font-medium">{log.user}</TableCell>
+                  <TableCell>{log.action}</TableCell>
+                  <TableCell>{new Date(log.timestamp).toLocaleString()}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
