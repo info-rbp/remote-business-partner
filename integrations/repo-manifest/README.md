@@ -1,29 +1,35 @@
-# Repository Manifest & Metadata
+# Repository Manifest and Metadata Registry
 
-This directory contains the tools and definitions for managing the platform's awareness of its component ecosystem.
+This directory contains the authoritative inventory and governance metadata for all external repositories that integrate with or support the Remote Business Partner platform.
 
-## 1. Core Philosophy
+## Architecture & Responsibilities
 
--   **Manifest for Awareness:** The `repos.manifest.json` file is a simple list of all repositories that are part of the platform ecosystem. It is used to give the platform *awareness* of its components.
--   **Metadata for Governance:** The `repository-metadata.ts` file provides strongly-typed, deterministic metadata about each repository. This is the **governed source of truth** for how the platform understands and classifies each component.
--   **Frappe as Runtime Truth:** Neither the manifest nor this metadata layer replaces the Frappe backend as the ultimate runtime system of record. This layer is for platform-level orchestration and visibility, not for business logic.
+This system maintains a strict separation of concerns between raw inventory and application-level governance logic:
 
-## 2. Metadata Ownership and Governance
+### 1. `repos.manifest.json` (The Inventory)
+**Role:** The lightweight, pure-data source of truth for tracking external repositories.
+**Purpose:** 
+- Provides a simple array of all repositories (name, key, url, type, purpose, notes).
+- Acts as the baseline inventory that tooling, scripts, or non-TypeScript environments can easily parse without needing to understand complex platform governance rules.
+- Contains NO runtime classification logic.
 
-**Owner:** Platform Engineering Team
+### 2. `repository-metadata.ts` (The Enriched Registry)
+**Role:** The authoritative, enriched metadata registry used by the application runtime.
+**Purpose:** 
+- Imports the raw inventory from the manifest.
+- Enriches each repository entry with critical governance classifications (e.g., `integrationType`, `runtimeClassification`, `launchClassification`, `surfaceVisibility`, `status`).
+- This file is the single source of truth for the application's TypeScript code. When the application needs to know *how* to interact with a repository (e.g., "Is it critical?", "Can it be embedded?"), it queries this registry.
 
-Adding or modifying a repository in the ecosystem is a governed process. It ensures that every component is explicitly classified and understood before it is integrated.
+### 3. `src/lib/external/types.ts` (The Contract)
+**Role:** Defines the canonical, strongly-typed data structures.
+**Purpose:**
+- Ensures the `ExternalRepository` interface strictly enforces both the manifest inventory fields and the enriched governance fields via strict string literal unions.
 
-### How to Add a New Repository
+## Why the Richer Governance Model?
 
-1.  **Add to Manifest:** Add the canonical repository key (e.g., `new-repo-name`) to the `repos.manifest.json` file.
-2.  **Add to Metadata:** Create a new entry in `repository-metadata.ts` for the new repository. You must provide all the required fields as defined by the `ExternalRepository` type.
-    -   `canonicalKey`: Must match the key in the manifest.
-    -   `displayName`: A human-readable name.
-    -   `purpose`: A clear, concise description of the repository's role.
-    -   `integrationType`, `runtimeClassification`, `launchClassification`, `surfaceVisibility`: Select the appropriate classifications from the `src/lib/external/types.ts` enums.
-    -   `status`: Set the initial status (e.g., `active`, `beta`).
-3.  **Update Ecosystem Map:** Add the new repository to the appropriate section in `ecosystem-map.md`.
-4.  **Submit Pull Request:** Submit a pull request with these changes. The Platform Engineering team will review the classifications for consistency and architectural alignment before merging.
+A simple manifest is insufficient for complex enterprise platforms. The application needs to dynamically adjust its behavior based on repository constraints. For example:
+- **`runtimeClassification`**: Determines if the app should hard-fail if a service is down (e.g. `runtime_critical` vs `feature_dependent`).
+- **`launchClassification`**: Dictates the UI rendering strategy (e.g. `embed` triggers an iframe, `sso` initiates an auth flow).
+- **`surfaceVisibility`**: Controls whether a repository is exposed to users in navigation or admin panels.
 
-**Self-service additions are not permitted.** This governance is in place to maintain architectural integrity and prevent classification drift.
+By splitting the pure list (`repos.manifest.json`) from the governance rules (`repository-metadata.ts`), we achieve a clean architecture that is easy to maintain but powerful enough for complex runtime logic.

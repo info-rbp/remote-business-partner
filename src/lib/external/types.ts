@@ -11,38 +11,56 @@ export type RepositoryType =
   | 'available-in-bench';
 
 /**
- * Represents the metadata for an external repository as defined in repos.manifest.json.
- * This is the single source of truth for repository structure across the application.
+ * Defines the type of integration for an external repository.
+ */
+export type IntegrationType =
+  | 'reference_only'
+  | 'service_api'
+  | 'embedded_module'
+  | 'sso_target'
+  | 'runtime_adjacent';
+
+/**
+ * Defines how an external repository is launched or accessed from the application.
+ */
+export type LaunchType = 'none' | 'native' | 'embed' | 'sso' | 'redirect';
+
+/**
+ * Defines the runtime classification of an external repository.
+ */
+export type RuntimeClassification =
+  | 'runtime_critical'
+  | 'feature_dependent'
+  | 'non_critical';
+
+/**
+ * Defines the visibility of an external repository in the application UI.
+ */
+export type SurfaceVisibility = 'visible' | 'hidden';
+
+/**
+ * Represents the lifecycle status of the external repository.
+ */
+export type Status = 'active' | 'deprecated' | 'planned';
+
+/**
+ * Represents the enriched metadata for an external repository.
+ * This is the single authoritative source of truth for governance across the application,
+ * combining the raw manifest inventory with enriched runtime classifications.
  */
 export interface ExternalRepository {
-  /**
-   * The display name of the repository (e.g., 'Dolibarr', 'Metabase').
-   */
+  // Inventory Fields (from repos.manifest.json)
   name: string;
-
-  /**
-   * A unique key for the repository (e.g., 'dolibarr', 'metabase').
-   */
   key: string;
-
-  /**
-   * The URL pointing to the external repository.
-   * Can be empty if the repository is already available locally (e.g. in the active bench).
-   */
   url: string;
-
-  /**
-   * The relationship type of this repository to the main project.
-   */
   type: RepositoryType;
-
-  /**
-   * A brief description of the repository's functional purpose.
-   */
   purpose: string;
-
-  /**
-   * Additional implementation notes or context regarding this repository.
-   */
   notes: string;
+
+  // Governance Fields (enriched in repository-metadata.ts)
+  integrationType: IntegrationType;
+  runtimeClassification: RuntimeClassification;
+  launchClassification: LaunchType;
+  surfaceVisibility: SurfaceVisibility;
+  status: Status;
 }

@@ -1,33 +1,85 @@
 # Platform Ecosystem Map
 
-This document provides a visual map of the entire platform ecosystem, categorized by the `integrationType` defined in `repository-metadata.ts`.
+This document provides a visual map of the entire platform ecosystem, categorized by the `integrationType` defined in `repository-metadata.ts` based on the authoritative Stage 4.1 governance model.
 
-## 1. Core Components
+## 1. Core Runtime (Runtime Adjacent & Submodules)
+These are fundamental pillars of the platform, critical to the operational runtime.
 
-These are the fundamental pillars of the platform, providing the primary user interface and the backend system of record.
+- **Frappe** (`frappe`)
+  - **Purpose:** Core framework and active platform foundation
+  - **Type:** `runtime_adjacent`
+  - **Criticality:** `runtime_critical`
+  - **Launch:** `native`
+  - **Status:** `active`
+- **Core** (`rbp_core`)
+  - **Purpose:** Custom platform shell and control plane
+  - **Type:** `embedded_module`
+  - **Criticality:** `runtime_critical`
+  - **Launch:** `native`
+  - **Status:** `active`
 
--   **Remote Business Partner (UI)** (`remote-business-partner`): The primary Next.js-based user interface for the platform.
--   **Frappe Bench for Big Apps** (`frappe-bench-for-big-apps`): The core Frappe backend and ERPNext runtime.
--   **ERPNext** (`erpnext`): The foundational ERP application providing core business logic.
+## 2. Authentication & Identity (SSO Targets)
+Components managing access control.
 
-## 2. Deployment Utilities
+- **Authentik** (`authentik`)
+  - **Purpose:** Identity and access management
+  - **Type:** `sso_target`
+  - **Criticality:** `runtime_critical`
+  - **Launch:** `sso`
+  - **Status:** `active`
 
-These repositories provide the tools and configurations necessary to deploy and manage the platform.
+## 3. Service APIs & Embeddable Features
+Services that expose APIs for data transfer, or provide UI components that are embedded (via iframe or module).
 
--   **Frappe Docker** (`frappe_docker`): Official Docker images and orchestration for the Frappe environment.
+- **Metabase** (`metabase`)
+  - **Purpose:** Analytics and BI capability
+  - **Type:** `service_api`
+  - **Criticality:** `feature_dependent`
+  - **Launch:** `embed`
+  - **Status:** `active`
+- **Odoo** (`odoo`)
+  - **Purpose:** ERP/application capability reference
+  - **Type:** `service_api`
+  - **Criticality:** `feature_dependent`
+  - **Launch:** `none`
+  - **Status:** `active`
+- **N8N** (`n8n`)
+  - **Purpose:** Automation and workflow orchestration
+  - **Type:** `service_api`
+  - **Criticality:** `feature_dependent`
+  - **Launch:** `none`
+  - **Status:** `active`
+- **Ballerine** (`ballerine`)
+  - **Purpose:** KYC/compliance workflow capability
+  - **Type:** `service_api`
+  - **Criticality:** `feature_dependent`
+  - **Launch:** `embed`
+  - **Status:** `active`
+- **Easy Appointments** (`easy_appointments`)
+  - **Purpose:** Appointment scheduling capability
+  - **Type:** `service_api`
+  - **Criticality:** `feature_dependent`
+  - **Launch:** `embed`
+  - **Status:** `active`
+- **Chaskiq** (`chaskiq`)
+  - **Purpose:** Customer messaging / support capability
+  - **Type:** `embedded_module`
+  - **Criticality:** `feature_dependent`
+  - **Launch:** `embed`
+  - **Status:** `active`
 
-## 3. Connectors
+*(Planned/Pending Service APIs: OpenBB, Marble, Hi.Events, Docspell, Fleetbase)*
 
-Connectors are responsible for data synchronization and bridging communication between the core platform and external services.
+## 4. References & Documentation
+Repositories used for architecture patterns, examples, or future roadmap targets. None of these execute directly in the primary runtime path yet.
 
--   **Odoo-Frappe Connector** (`odoo-frappe-connector`): Synchronizes data between Frappe/ERPNext and Odoo.
--   **Authentik Integration** (`frappe-external-authentik`): Provides Authentik-based OpenID Connect authentication.
--   **Metabase Frappe Driver** (`metabase-frappe-driver`): Enables Metabase to connect to the Frappe database.
--   **BigQuery Connector** (`frappe-bigquery-connector`): Exports Frappe data to Google BigQuery.
+- **Dolibarr** (`dolibarr`)
+  - **Purpose:** ERP/operations capability reference
+  - **Type:** `reference_only`
+  - **Status:** `active`
+- **Nexus** (`nexus`)
+  - **Purpose:** Artifact repository management
+  - **Type:** `reference_only`
+  - **Status:** `active`
 
-## 4. Adapters & Extensions
-
-These components enhance the functionality of the core Frappe platform, often by improving the user interface or adding specific features.
-
--   **Gantt Chart (GoFlow)** (`erpnext_gantt_goflow`): An extension for advanced Gantt chart functionalities.
--   **Better List View** (`frappe-better-list-view`): A UI extension that enhances Frappe's default list views.
+*(Planned/Reference Targets: Appsmith, Financial Freedom, Tirreno, KYC Check, Ghostfolio, Apache Fineract, Horilla, Postiz, Open Projects)*
