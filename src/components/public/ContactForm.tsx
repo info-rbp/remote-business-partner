@@ -2,9 +2,11 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import { submitContactForm } from '@/app/actions';
+import type { FormState } from '@/app/actions';
 import { useEffect } from 'react';
 
-const initialState = {
+const initialState: FormState = {
+  success: false,
   message: null,
   errors: null,
 };

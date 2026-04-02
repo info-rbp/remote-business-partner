@@ -1,18 +1,18 @@
 import { makeRequest } from '@/lib/integrations/core/request';
 import { IntegrationError } from '@/lib/integrations/core/errors';
-import type { ApiTokenAuth } from '@/lib/integrations/core/auth';
+import type { ServiceAuth } from '@/lib/integrations/core/auth';
 import type { AuthentikUser } from './types';
 
 export class AuthentikClient {
   private readonly baseUrl: string;
-  private readonly auth: ApiTokenAuth;
+  private readonly auth: ServiceAuth;
 
   constructor(baseUrl: string, token: string) {
     if (!baseUrl || !token) {
-      throw new IntegrationError('Authentik client is not configured. Base URL and token are required.', { service: 'Authentik' });
+      throw new IntegrationError('Authentik client is not configured. Base URL and token are required.', 'Authentik', false);
     }
     this.baseUrl = baseUrl;
-    this.auth = { type: 'api-token', token };
+    this.auth = { type: 'bearer', token };
   }
 
   /**

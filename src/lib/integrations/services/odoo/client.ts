@@ -28,7 +28,7 @@ export class OdooClient {
 
   constructor(baseUrl: string, db: string) {
     if (!baseUrl || !db) {
-      throw new IntegrationError('Odoo client is not configured. Base URL and database name are required.', { service: 'Odoo' });
+      throw new IntegrationError('Odoo client is not configured. Base URL and database name are required.', 'Odoo', false);
     }
     this.baseUrl = baseUrl;
     this.db = db;
@@ -49,13 +49,13 @@ export class OdooClient {
     });
 
     if (!response.ok) {
-      throw new IntegrationError(`Odoo RPC request failed with status ${response.status}`, { service: 'Odoo', statusCode: response.status });
+      throw new IntegrationError(`Odoo RPC request failed with status ${response.status}`, 'Odoo', response.status >= 500, { downstreamError: response.status });
     }
 
     const json = await response.json() as JsonRpcResponse<T>;
 
     if (json.error) {
-      throw new IntegrationError(`Odoo RPC Error: ${json.error.message}`, { service: 'Odoo', errorDetails: json.error });
+      throw new IntegrationError(`Odoo RPC Error: ${json.error.message}`, 'Odoo', false, { downstreamError: json.error });
     }
 
     return json.result as T;

@@ -28,7 +28,7 @@ export const StateNotice = ({ state, remediationLink, remediationText }: StateNo
   };
 
   return (
-    <Alert variant={variant}>
+    <Alert variant={variant === "destructive" ? "destructive" : "default"}>
       {getIcon()}
       <AlertTitle>{label}</AlertTitle>
       <AlertDescription>

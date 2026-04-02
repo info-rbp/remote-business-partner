@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircleIcon, XCircleIcon, ArrowPathIcon, DocumentTextIcon } from '@heroicons/react/24/solid';
+import { CheckCircleIcon, XCircleIcon, DocumentTextIcon } from '@heroicons/react/24/solid';
 import type {
   AuthCheckResponse,
   RecordCreationResponse,

@@ -58,7 +58,7 @@ function mapManifestItemToCapability(item: RepositoryManifestItem): EcosystemCap
     };
 }
 
-let_ecosystemData: EcosystemCapability[] | null = null;
+let _ecosystemData: EcosystemCapability[] | null = null;
 
 /**
  * Reads, parses, and maps the repository manifest.

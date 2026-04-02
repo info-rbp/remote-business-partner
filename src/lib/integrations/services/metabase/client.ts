@@ -1,15 +1,15 @@
 import { makeRequest } from '@/lib/integrations/core/request';
 import { IntegrationError } from '@/lib/integrations/core/errors';
-import type { MetabaseSessionAuth } from '@/lib/integrations/core/auth';
+import type { ServiceAuth } from '@/lib/integrations/core/auth';
 import type { MetabaseSession, MetabaseHealth } from './types';
 
 export class MetabaseClient {
   private readonly baseUrl: string;
-  private auth: MetabaseSessionAuth | null = null;
+  private auth: ServiceAuth | null = null;
 
   constructor(baseUrl: string) {
     if (!baseUrl) {
-      throw new IntegrationError('Metabase client is not configured. Base URL is required.', { service: 'Metabase' });
+      throw new IntegrationError('Metabase client is not configured. Base URL is required.', 'Metabase', false);
     }
     this.baseUrl = baseUrl;
   }
@@ -21,19 +21,19 @@ export class MetabaseClient {
   async connect(username: string, password: string): Promise<void> {
     const response = await makeRequest<MetabaseSession>(
       this.baseUrl,
-      { type: 'unauthenticated' }, // No auth needed for the auth endpoint itself
+      { type: 'none' }, // No auth needed for the auth endpoint itself
       '/api/session',
       {
         method: 'POST',
         body: { username, password },
       }
     );
-    this.auth = { type: 'metabase-session', sessionId: response.id };
+    this.auth = { type: 'session', sessionId: response.id };
   }
 
-  private getAuth(): MetabaseSessionAuth {
+  private getAuth(): ServiceAuth {
     if (!this.auth) {
-      throw new IntegrationError('Metabase client is not authenticated. Call connect() first.', { service: 'Metabase' });
+      throw new IntegrationError('Metabase client is not authenticated. Call connect() first.', 'Metabase', false);
     }
     return this.auth;
   }
@@ -43,7 +43,7 @@ export class MetabaseClient {
    */
   async checkHealth(): Promise<MetabaseHealth> {
     // This endpoint typically requires no authentication.
-    return makeRequest<MetabaseHealth>(this.baseUrl, { type: 'unauthenticated' }, '/api/health');
+    return makeRequest<MetabaseHealth>(this.baseUrl, { type: 'none' }, '/api/health');
   }
 
   /**

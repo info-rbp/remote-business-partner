@@ -1,4 +1,3 @@
-
 import React from "react";
 import type { Metadata } from 'next';
 import PublicHeader from "@/components/navigation/PublicHeader";
@@ -9,12 +8,16 @@ export const metadata: Metadata = {
     description: 'The central hub for managing your applications, billing, and support.',
 };
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <PublicHeader />
-      <main className="flex-grow container mx-auto p-4">{children}</main>
-      <PublicFooter />
-    </div>
+    <html lang="en">
+      <body>
+        <div className="min-h-screen flex flex-col">
+          <PublicHeader />
+          <main className="flex-grow container mx-auto p-4">{children}</main>
+          <PublicFooter />
+        </div>
+      </body>
+    </html>
   );
 }

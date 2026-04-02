@@ -1,4 +1,5 @@
 'use client';
+import Link from "next/link";
 
 import { getMockUser } from '@/lib/auth';
 import { ROUTES } from '@/routes';

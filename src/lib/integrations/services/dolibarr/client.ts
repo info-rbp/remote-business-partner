@@ -1,17 +1,17 @@
 import { makeRequest } from '@/lib/integrations/core/request';
 import { IntegrationError } from '@/lib/integrations/core/errors';
-import type { DolApiKeyAuth } from '@/lib/integrations/core/auth';
+import type { ServiceAuth } from '@/lib/integrations/core/auth';
 
 export class DolibarrClient {
   private readonly baseUrl: string;
-  private readonly auth: DolApiKeyAuth;
+  private readonly auth: ServiceAuth;
 
   constructor(baseUrl: string, apiKey: string) {
     if (!baseUrl || !apiKey) {
-      throw new IntegrationError('Dolibarr client is not configured. Base URL and API key are required.', { service: 'Dolibarr' });
+      throw new IntegrationError('Dolibarr client is not configured. Base URL and API key are required.', 'Dolibarr', false);
     }
     this.baseUrl = baseUrl;
-    this.auth = { type: 'dolapikey', apiKey };
+    this.auth = { type: 'custom', customHeader: { key: 'DOLAPIKEY', value: apiKey } };
   }
 
   /**

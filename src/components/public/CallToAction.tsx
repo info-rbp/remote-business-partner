@@ -2,38 +2,37 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import { useEffect } from 'react';
+import type { FormState } from '@/app/actions';
 
-const initialState = {
+const initialState: FormState = {
+  success: false,
   message: null,
   errors: null,
 };
 
 function SubmitButton() {
-    const { pending } = useFormStatus();
+  const { pending } = useFormStatus();
   
-    return (
-      <button type="submit" disabled={pending} className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold">
-        {pending ? 'Submitting...' : 'Submit'}
-      </button>
-    );
-  }
+  return (
+    <button type="submit" disabled={pending} className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold">
+      {pending ? 'Submitting...' : 'Submit'}
+    </button>
+  );
+}
 
 const CallToAction = () => {
-    async function submitLeadForm(prevState: any, formData: FormData) {
-        'use server';
-        console.log('Lead form submitted:', {
-            email: formData.get('email'),
-        });
-        return { message: 'Thank you for your interest!' };
+  async function submitLeadForm(prevState: FormState, formData: FormData): Promise<FormState> {
+    // Mock server action
+    return { success: true, message: 'Thank you for your interest!', errors: null };
+  }
+
+  const [state, formAction] = useFormState(submitLeadForm, initialState);
+
+  useEffect(() => {
+    if (state.message) {
+      alert(state.message);
     }
-
-    const [state, formAction] = useFormState(submitLeadForm, initialState);
-
-    useEffect(() => {
-        if (state.message) {
-        alert(state.message);
-        }
-    }, [state.message]);
+  }, [state.message]);
 
   return (
     <div className="bg-gray-100 p-8 rounded-lg text-center">

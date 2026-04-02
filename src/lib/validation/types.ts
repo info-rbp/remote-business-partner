@@ -26,4 +26,11 @@ export interface ReportingVisibilityResponse {
   recordId: string;
   isVisible: boolean;
   message: string;
+  checkedAt: string;
+}
+
+export interface AuthCheckResponse { 
+    success: boolean; 
+    message: string; 
+    user: MockUser | null; 
 }

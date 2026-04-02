@@ -31,14 +31,14 @@ export async function makeRequest<T>(
   };
 
   // Add authentication headers based on the auth type
-  if (auth.type === 'api-token') {
+  if (auth.type === 'bearer' && auth.token) {
     headers['Authorization'] = `Bearer ${auth.token}`;
-  } else if (auth.type === 'dolapikey') {
-    headers['DOLAPIKEY'] = auth.apiKey;
-  } else if (auth.type === 'metabase-session') {
+  } else if (auth.type === 'custom' && auth.customHeader) {
+    headers[auth.customHeader.key] = auth.customHeader.value;
+  } else if (auth.type === 'session' && auth.sessionId) {
     headers['X-Metabase-Session'] = auth.sessionId;
   }
-  // Odoo uses a session_id in the request body for JSON-RPC, handled in the client.
+  // Basic and API-Key strategies can be added here if needed
 
   try {
     const response = await fetch(url, {
@@ -49,10 +49,10 @@ export async function makeRequest<T>(
 
     if (!response.ok) {
       throw new IntegrationError(`API request failed with status ${response.status}: ${response.statusText}`,
+        new URL(url).hostname,
+        response.status >= 500,
         {
-          service: new URL(url).hostname,
-          statusCode: response.status,
-          isRetryable: response.status >= 500,
+          downstreamError: response.status,
         }
       );
     }
@@ -63,11 +63,10 @@ export async function makeRequest<T>(
     if (error instanceof IntegrationError) {
       throw error;
     }
-    throw new IntegrationError(`Network or unexpected error occurred: ${error.message}`,
-      {
-        service: new URL(url).hostname,
-        isRetryable: true, // Network errors are often transient
-      }
+    const message = error instanceof Error ? error.message : String(error);
+    throw new IntegrationError(`Network or unexpected error occurred: ${message}`,
+      new URL(url).hostname,
+      true // Network errors are often transient
     );
   }
 }
